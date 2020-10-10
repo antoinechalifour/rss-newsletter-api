@@ -1,0 +1,13 @@
+- name: Pull images
+  docker_image:
+    name: "{{ item }}"
+    source: pull
+  loop: ["antoinechalifour/rss-newsletter:latest"]
+
+- name: Ensure RSS Newsletter is running
+  docker_container:
+    name: rss_newsletter_api
+    image: antoinechalifour/rss-newsletter
+    state: started
+    ports:
+      - "127.0.0.1:9090:8080"
