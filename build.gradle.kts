@@ -23,6 +23,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-simplexml:2.5.0")
+    implementation("org.simplejavamail:simple-java-mail:6.4.3")
+    implementation("org.simplejavamail:spring-module:6.4.3")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
