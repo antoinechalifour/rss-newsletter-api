@@ -1,7 +1,9 @@
 package dev.antoinechalifour.newsletter.usecase
 
 import dev.antoinechalifour.newsletter.domain.*
+import org.springframework.stereotype.Component
 
+@Component
 class SendNewsletter(
     private val sourcePort: SourcePort,
     private val articlePort: ArticlePort,
