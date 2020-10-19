@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Import
 import org.springframework.scheduling.annotation.EnableScheduling
 import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
+import java.time.Clock
+import java.time.ZoneId
 
 @SpringBootApplication
 @EnableScheduling
@@ -29,8 +31,10 @@ class NewsletterApplication {
     fun recipient(
         @Value("\${newsletter.recipient.name}") name: String,
         @Value("\${newsletter.recipient.email}") email: String
-    ) =
-        Recipient(name, email)
+    ) = Recipient(name, email)
+
+    @Bean
+    fun clock() = Clock.system(ZoneId.of("Europe/Paris"))
 }
 
 fun main(args: Array<String>) {

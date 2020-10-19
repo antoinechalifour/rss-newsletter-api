@@ -8,12 +8,20 @@ import dev.antoinechalifour.newsletter.domain.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.Clock
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 internal class SendNewsletterTest {
     private lateinit var sourcePort: SourcePort
     private lateinit var newsletterPort: NewsletterPort
     private lateinit var articlePort: ArticlePort
+    private val clock = Clock.fixed(
+        now(),
+        ZoneId.of("Europe/Paris")
+    )
+
 
     @BeforeEach
     fun setup() {
@@ -25,7 +33,7 @@ internal class SendNewsletterTest {
     @Test
     fun `sends the newsletter with articles form multiple sources`() {
         // Given
-        val sendNewsletter = SendNewsletter(aRecipient(), sourcePort, articlePort, newsletterPort)
+        val sendNewsletter = SendNewsletter(aRecipient(), clock, sourcePort, articlePort, newsletterPort)
         val sources = listOf(aTechSource(), aNewsSource())
 
         // When
@@ -41,6 +49,29 @@ internal class SendNewsletterTest {
         })
     }
 
+    @Test
+    fun `sends only articles published from yesteday 12 30pm`() {
+        // Given
+        val sendNewsletter = SendNewsletter(aRecipient(), clock, sourcePort, articlePort, newsletterPort)
+        val sources = listOf(aTechSource(), aNewsSource())
+
+        // When
+        whenever(sourcePort.all()).thenReturn(sources)
+        whenever(articlePort.ofSource(aTechSource())).thenReturn(
+            listOf(
+                aTechArticle(),
+                aTechArticleFromYesterday()
+            )
+        )
+        sendNewsletter()
+
+        // Then
+        verify(newsletterPort).send(check {
+            assertThat(it.recipient).isEqualTo(aRecipient())
+            assertThat(it.articles).isEqualTo(listOf(aTechArticle()))
+        })
+    }
+
     private fun aRecipient() = Recipient("John Doe", "john.doe@email.com")
 
     private fun aNewsSource() = Source("https://www.lemonde.fr/rss/une.xml")
@@ -50,8 +81,15 @@ internal class SendNewsletterTest {
     private fun aTechArticle() =
         Article("Some tech article title", "http://tech.com/link", today())
 
+    private fun aTechArticleFromYesterday() =
+        Article("Some older tech article title", "http://tech.com/link", yesterday())
+
     private fun aNewsArticle() =
         Article("Some news article title", "http://news.com/link", today())
 
+    private fun now() = Instant.parse("2020-10-19T17:30:00.00Z")
+
     private fun today() = LocalDateTime.of(2020, 10, 19, 14, 30)
+
+    private fun yesterday() = today().minusDays(1).withHour(12).withMinute(29)
 }
