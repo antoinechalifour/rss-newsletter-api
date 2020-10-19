@@ -24,7 +24,7 @@ internal class SendNewsletterTest {
     @Test
     fun `sends the newsletter with articles form multiple sources`() {
         // Given
-        val sendNewsletter = SendNewsletter(sourcePort, articlePort, newsletterPort)
+        val sendNewsletter = SendNewsletter(aRecipient(), sourcePort, articlePort, newsletterPort)
         val sources = listOf(aTechSource(), aNewsSource())
 
         // When
@@ -35,9 +35,12 @@ internal class SendNewsletterTest {
 
         // Then
         verify(newsletterPort).send(check {
+            assertThat(it.recipient).isEqualTo(aRecipient())
             assertThat(it.articles).isEqualTo(listOf(aTechArticle(), aNewsArticle()))
         })
     }
+
+    private fun aRecipient() = Recipient("John Doe", "john.doe@email.com")
 
     private fun aNewsSource() = Source("https://www.lemonde.fr/rss/une.xml")
 

@@ -1,3 +1,4 @@
 package dev.antoinechalifour.newsletter.domain
 
-data class Newsletter(val articles: List<Article>)
+data class Newsletter(val recipient: Recipient, val articles: List<Article>) {
+}

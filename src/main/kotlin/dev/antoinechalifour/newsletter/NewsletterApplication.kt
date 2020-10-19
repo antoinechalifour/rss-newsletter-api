@@ -1,9 +1,9 @@
 package dev.antoinechalifour.newsletter
 
+import dev.antoinechalifour.newsletter.domain.Recipient
 import dev.antoinechalifour.newsletter.infrastructure.RssService
-import org.simplejavamail.api.mailer.Mailer
-import org.simplejavamail.mailer.MailerBuilder
 import org.simplejavamail.springsupport.SimpleJavaMailSpringSupport
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
@@ -25,6 +25,12 @@ class NewsletterApplication {
         .build()
         .create(RssService::class.java)
 
+    @Bean
+    fun recipient(
+        @Value("\${newsletter.recipient.name}") name: String,
+        @Value("\${newsletter.recipient.email}") email: String
+    ) =
+        Recipient(name, email)
 }
 
 fun main(args: Array<String>) {

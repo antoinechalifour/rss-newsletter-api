@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class SendNewsletter(
+    private val recipient: Recipient,
     private val sourcePort: SourcePort,
     private val articlePort: ArticlePort,
     private val newsletterPort: NewsletterPort
@@ -12,7 +13,7 @@ class SendNewsletter(
     operator fun invoke() {
         val sources = sourcePort.all()
         val articles = sources.map(articlePort::ofSource).flatten()
-        val newsletter = Newsletter(articles)
+        val newsletter = Newsletter(recipient, articles)
 
         newsletterPort.send(newsletter)
     }
