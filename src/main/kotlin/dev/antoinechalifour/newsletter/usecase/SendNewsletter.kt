@@ -22,7 +22,8 @@ class SendNewsletter(
             .filter { it.pubDate.isAfter(fromDate) }
         val newsletter = Newsletter(recipient, articles)
 
-        newsletterPort.send(newsletter)
+        if (newsletter.isWorthSending())
+            newsletterPort.send(newsletter)
     }
 
     private fun yesterday() =

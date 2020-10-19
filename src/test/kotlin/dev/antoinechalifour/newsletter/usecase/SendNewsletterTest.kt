@@ -1,9 +1,6 @@
 package dev.antoinechalifour.newsletter.usecase
 
-import com.nhaarman.mockitokotlin2.check
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import dev.antoinechalifour.newsletter.domain.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -70,6 +67,21 @@ internal class SendNewsletterTest {
             assertThat(it.recipient).isEqualTo(aRecipient())
             assertThat(it.articles).isEqualTo(listOf(aTechArticle()))
         })
+    }
+
+    @Test
+    fun `does not send the newsletter when no articles have been published`() {
+        // Given
+        val sendNewsletter = SendNewsletter(aRecipient(), clock, sourcePort, articlePort, newsletterPort)
+        val sources = listOf(aTechSource(), aNewsSource())
+
+        // When
+        whenever(sourcePort.all()).thenReturn(sources)
+        whenever(articlePort.ofSource(aTechSource())).thenReturn(emptyList())
+        sendNewsletter()
+
+        // Then
+        verify(newsletterPort, never()).send(any())
     }
 
     private fun aRecipient() = Recipient("John Doe", "john.doe@email.com")
