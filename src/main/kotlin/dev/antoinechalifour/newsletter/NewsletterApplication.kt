@@ -8,10 +8,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
+import org.springframework.scheduling.annotation.EnableScheduling
 import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
 @SpringBootApplication
+@EnableScheduling
 @Import(SimpleJavaMailSpringSupport::class)
 class NewsletterApplication {
     private val ignoredBaseUrl = "http://localhost/"
