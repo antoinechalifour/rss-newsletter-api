@@ -1,3 +1,5 @@
 package dev.antoinechalifour.newsletter.domain
 
-data class Article(val title: String, val url: String, val pubDate: String)
+import java.time.LocalDateTime
+
+data class Article(val title: String, val url: String, val pubDate: LocalDateTime)

@@ -8,6 +8,7 @@ import dev.antoinechalifour.newsletter.domain.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class SendNewsletterTest {
     private lateinit var sourcePort: SourcePort
@@ -47,8 +48,10 @@ internal class SendNewsletterTest {
     private fun aTechSource() = Source("https://blog.octo.com/feed/")
 
     private fun aTechArticle() =
-        Article("Some tech article title", "http://tech.com/link", "Thu, 15 Oct 2020 08:39:02 +0000")
+        Article("Some tech article title", "http://tech.com/link", today())
 
     private fun aNewsArticle() =
-        Article("Some news article title", "http://news.com/link", "Thu, 15 Oct 2020 09/30:00 +0000")
+        Article("Some news article title", "http://news.com/link", today())
+
+    private fun today() = LocalDateTime.of(2020, 10, 19, 14, 30)
 }

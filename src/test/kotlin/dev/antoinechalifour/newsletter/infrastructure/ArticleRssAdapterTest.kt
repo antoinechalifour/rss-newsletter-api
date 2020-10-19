@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.net.HttpURLConnection
+import java.time.LocalDateTime
 
 internal class ArticleRssAdapterTest {
     private lateinit var rssService: RssService
@@ -54,12 +55,12 @@ internal class ArticleRssAdapterTest {
         Article(
             "RSS Solutions for Restaurants",
             "http://www.feedforall.com/restaurant.htm",
-            "Tue, 19 Oct 2004 11:09:11 -0400"
+            LocalDateTime.of(2004, 10, 19, 11, 9, 11)
         ),
         Article(
             "RSS Solutions for Schools and Colleges",
             "http://www.feedforall.com/schools.htm",
-            "Tue, 19 Oct 2004 11:09:09 -0400"
+            LocalDateTime.of(2004, 10, 19, 11, 9, 9)
         )
     )
 
