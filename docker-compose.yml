@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  smtp:
+    image: maildev/maildev:2.0.0-beta3
+    ports:
+      - 9080:1080
+      - 9025:1025
