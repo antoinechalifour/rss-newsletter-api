@@ -31,6 +31,9 @@ dependencies {
     implementation("org.simplejavamail:simple-java-mail:6.4.3")
     implementation("org.simplejavamail:spring-module:6.4.3")
 
+    // Templates
+    implementation("org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE")
+
     // Tests
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
