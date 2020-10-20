@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1 th:text="${recipient}">Hello</h1>
+<ol>
+    <li th:each="article : ${articles}">
+        <span th:text="${article.title}"></span>
+        <a th:href="@{${article.url}}">read more</a>
+    </li>
+</ol>
+</body>
+</html>

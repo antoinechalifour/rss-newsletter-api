@@ -5,9 +5,14 @@ import dev.antoinechalifour.newsletter.domain.NewsletterPort
 import org.simplejavamail.api.mailer.Mailer
 import org.simplejavamail.email.EmailBuilder
 import org.springframework.stereotype.Component
+import org.thymeleaf.context.Context
+import org.thymeleaf.spring5.SpringTemplateEngine
 
 @Component
-class NewsletterSmtpAdapter(val mailer: Mailer) : NewsletterPort {
+class NewsletterSmtpAdapter(
+    val mailer: Mailer,
+    val emailTemplates: SpringTemplateEngine
+) : NewsletterPort {
     override fun send(newsletter: Newsletter) {
         val email = EmailBuilder.startingBlank()
             .from("Your newsletter", "newsletter.antoinechalifour@gmail.com")
@@ -20,16 +25,11 @@ class NewsletterSmtpAdapter(val mailer: Mailer) : NewsletterPort {
     }
 
     private fun makeContent(newsletter: Newsletter): String {
-        var content = "<ul>"
-        newsletter.articles.forEach {
-            content += """
-                <li>
-                    <a href="${it.url}">${it.title}</a>
-                </li>
-            """.trimIndent()
+        val context = Context().apply {
+            setVariable("recipient", newsletter.recipient.name)
+            setVariable("articles", newsletter.articles)
         }
-        content += "</ul>"
 
-        return content
+        return emailTemplates.process("newsletter", context)
     }
 }
