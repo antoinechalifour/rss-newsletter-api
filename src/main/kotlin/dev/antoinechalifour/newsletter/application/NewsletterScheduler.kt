@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 @Component
 class NewsletterScheduler(val sendNewsletter: SendNewsletter) {
 
-    @Scheduled(cron = "0 30 12 * * *")
+    @Scheduled(cron = "0 30 12 * * *", zone = "Europe/Paris")
     fun sendNewsletterTask() {
         sendNewsletter()
     }
