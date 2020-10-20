@@ -1,7 +1,17 @@
 package dev.antoinechalifour.newsletter.usecase
 
-import com.nhaarman.mockitokotlin2.*
-import dev.antoinechalifour.newsletter.domain.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.check
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
+import dev.antoinechalifour.newsletter.domain.Article
+import dev.antoinechalifour.newsletter.domain.ArticlePort
+import dev.antoinechalifour.newsletter.domain.NewsletterPort
+import dev.antoinechalifour.newsletter.domain.Recipient
+import dev.antoinechalifour.newsletter.domain.Source
+import dev.antoinechalifour.newsletter.domain.SourcePort
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,7 +28,6 @@ internal class SendNewsletterTest {
         now(),
         ZoneId.of("Europe/Paris")
     )
-
 
     @BeforeEach
     fun setup() {
@@ -40,10 +49,12 @@ internal class SendNewsletterTest {
         sendNewsletter()
 
         // Then
-        verify(newsletterPort).send(check {
-            assertThat(it.recipient).isEqualTo(aRecipient())
-            assertThat(it.articles).isEqualTo(listOf(aTechArticle(), aNewsArticle()))
-        })
+        verify(newsletterPort).send(
+            check {
+                assertThat(it.recipient).isEqualTo(aRecipient())
+                assertThat(it.articles).isEqualTo(listOf(aTechArticle(), aNewsArticle()))
+            }
+        )
     }
 
     @Test
@@ -63,10 +74,12 @@ internal class SendNewsletterTest {
         sendNewsletter()
 
         // Then
-        verify(newsletterPort).send(check {
-            assertThat(it.recipient).isEqualTo(aRecipient())
-            assertThat(it.articles).isEqualTo(listOf(aTechArticle()))
-        })
+        verify(newsletterPort).send(
+            check {
+                assertThat(it.recipient).isEqualTo(aRecipient())
+                assertThat(it.articles).isEqualTo(listOf(aTechArticle()))
+            }
+        )
     }
 
     @Test

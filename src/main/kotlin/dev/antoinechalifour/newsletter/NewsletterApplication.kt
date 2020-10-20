@@ -5,14 +5,12 @@ import dev.antoinechalifour.newsletter.infrastructure.RssService
 import org.simplejavamail.springsupport.SimpleJavaMailSpringSupport
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect
 import org.thymeleaf.spring5.SpringTemplateEngine
-import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver
 import org.thymeleaf.templatemode.TemplateMode
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import retrofit2.Retrofit

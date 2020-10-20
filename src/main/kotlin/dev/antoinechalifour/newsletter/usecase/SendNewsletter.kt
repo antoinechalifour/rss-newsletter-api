@@ -1,6 +1,10 @@
 package dev.antoinechalifour.newsletter.usecase
 
-import dev.antoinechalifour.newsletter.domain.*
+import dev.antoinechalifour.newsletter.domain.ArticlePort
+import dev.antoinechalifour.newsletter.domain.Newsletter
+import dev.antoinechalifour.newsletter.domain.NewsletterPort
+import dev.antoinechalifour.newsletter.domain.Recipient
+import dev.antoinechalifour.newsletter.domain.SourcePort
 import org.springframework.stereotype.Component
 import java.time.Clock
 
@@ -20,5 +24,4 @@ class SendNewsletter(
             if (isWorthSending()) newsletterPort.send(this)
         }
     }
-
 }
