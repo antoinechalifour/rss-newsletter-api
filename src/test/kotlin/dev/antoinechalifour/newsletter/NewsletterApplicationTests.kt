@@ -9,5 +9,4 @@ class NewsletterApplicationTests {
     @Test
     fun contextLoads() {
     }
-
 }
