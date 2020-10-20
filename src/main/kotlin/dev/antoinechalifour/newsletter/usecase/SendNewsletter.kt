@@ -3,7 +3,6 @@ package dev.antoinechalifour.newsletter.usecase
 import dev.antoinechalifour.newsletter.domain.*
 import org.springframework.stereotype.Component
 import java.time.Clock
-import java.time.LocalDateTime
 
 @Component
 class SendNewsletter(
@@ -14,18 +13,12 @@ class SendNewsletter(
     private val newsletterPort: NewsletterPort
 ) {
     operator fun invoke() {
-        val fromDate = yesterday()
-
         val sources = sourcePort.all()
-        val articles = sources.map(articlePort::ofSource)
-            .flatten()
-            .filter { it.pubDate.isAfter(fromDate) }
-        val newsletter = Newsletter(recipient, articles)
+        val articles = sources.map(articlePort::ofSource).flatten()
 
-        if (newsletter.isWorthSending())
-            newsletterPort.send(newsletter)
+        Newsletter.forToday(recipient, articles, clock).run {
+            if (isWorthSending()) newsletterPort.send(this)
+        }
     }
 
-    private fun yesterday() =
-        LocalDateTime.now(clock).minusDays(1).withHour(12).withMinute(30)
 }
