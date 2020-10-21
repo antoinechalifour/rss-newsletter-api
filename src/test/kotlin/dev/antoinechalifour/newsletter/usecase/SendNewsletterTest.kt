@@ -37,7 +37,7 @@ internal class SendNewsletterTest {
     }
 
     @Test
-    fun `sends the newsletter with articles form multiple sources`() {
+    fun `sends the newsletter with articles from multiple sources`() {
         // Given
         val sendNewsletter = SendNewsletter(aRecipient(), clock, sourcePort, articlePort, newsletterPort)
         val sources = listOf(aTechSource(), aNewsSource())
