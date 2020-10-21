@@ -4,14 +4,16 @@ import dev.antoinechalifour.newsletter.domain.Newsletter
 import dev.antoinechalifour.newsletter.domain.NewsletterPort
 import org.simplejavamail.api.mailer.Mailer
 import org.simplejavamail.email.EmailBuilder
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.thymeleaf.context.Context
 import org.thymeleaf.spring5.SpringTemplateEngine
 
 @Component
 class NewsletterSmtpAdapter(
+    @Qualifier("emailTemplateEngine") val emailTemplates: SpringTemplateEngine,
     val mailer: Mailer,
-    val emailTemplates: SpringTemplateEngine
+    val mjmlService: MjmlService
 ) : NewsletterPort {
     override fun send(newsletter: Newsletter) {
         val email = EmailBuilder.startingBlank()
@@ -30,6 +32,9 @@ class NewsletterSmtpAdapter(
             setVariable("articles", newsletter.articles)
         }
 
-        return emailTemplates.process("newsletter", context)
+        val mjml = emailTemplates.process("newsletter", context)
+        val response = mjmlService.render(MjmlBody(mjml)).execute()
+
+        return response.body()?.html ?: throw IllegalStateException("Mjml service down")
     }
 }
