@@ -12,6 +12,6 @@ class NewsletterController(val sendNewsletter: SendNewsletter) {
     fun post(): String {
         sendNewsletter()
 
-        return "Sent"
+        return "Newsletter sent!"
     }
 }
