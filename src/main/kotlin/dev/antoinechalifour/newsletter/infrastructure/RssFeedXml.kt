@@ -9,6 +9,9 @@ class RssFeedXml {
     @field:Element(name = "channel")
     lateinit var channel: Channel
 
+    val items: List<Channel.Item>
+        get() = channel.items
+
     @Root(name = "channel", strict = false)
     class Channel {
         @field:ElementList(name = "item", inline = true)
