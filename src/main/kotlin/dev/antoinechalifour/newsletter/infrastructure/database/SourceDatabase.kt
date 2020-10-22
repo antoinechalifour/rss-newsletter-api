@@ -14,4 +14,11 @@ open class SourceDatabase {
     open var url: String? = null
 
     fun toSource() = Source(checkNotNull(id), checkNotNull(url))
+
+    companion object {
+        fun of(source: Source) = SourceDatabase().apply {
+            id = source.id
+            url = source.url
+        }
+    }
 }

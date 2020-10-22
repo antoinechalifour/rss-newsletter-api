@@ -12,4 +12,8 @@ class SourceStaticAdapter : SourcePort {
         Source(UUID.randomUUID(), "https://blog.octo.com/feed/"),
         Source(UUID.randomUUID(), "https://www.lemonde.fr/rss/une.xml")
     )
+
+    override fun save(source: Source) {
+        TODO("Not yet implemented")
+    }
 }
