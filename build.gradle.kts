@@ -23,6 +23,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     // HTTP
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
@@ -36,6 +37,9 @@ dependencies {
 
     // Templates
     implementation("org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE")
+
+    // Database
+    runtimeOnly("org.postgresql:postgresql:42.2.18")
 
     // Tests
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
