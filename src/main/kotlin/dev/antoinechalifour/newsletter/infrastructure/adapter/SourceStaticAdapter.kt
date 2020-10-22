@@ -1,4 +1,4 @@
-package dev.antoinechalifour.newsletter.infrastructure
+package dev.antoinechalifour.newsletter.infrastructure.adapter
 
 import dev.antoinechalifour.newsletter.domain.Source
 import dev.antoinechalifour.newsletter.domain.SourcePort

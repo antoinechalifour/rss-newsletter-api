@@ -1,8 +1,9 @@
-package dev.antoinechalifour.newsletter.infrastructure
+package dev.antoinechalifour.newsletter.infrastructure.adapter
 
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.domain.Article
 import dev.antoinechalifour.newsletter.domain.Source
+import dev.antoinechalifour.newsletter.infrastructure.http.rss.RssService
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
@@ -37,7 +38,8 @@ internal class ArticleRssAdapterTest {
     @Test
     fun `returns the articles from the RSS feed`() {
         // Given
-        val articlesRssAdapter = ArticleRssAdapter(rssService)
+        val articlesRssAdapter =
+            ArticleRssAdapter(rssService)
         mockWebServer.enqueue(aValidRssFeed())
 
         // When
