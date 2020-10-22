@@ -1,3 +1,5 @@
 package dev.antoinechalifour.newsletter.domain
 
-data class Source(val url: String)
+import java.util.UUID
+
+data class Source(val id: UUID, val url: String)

@@ -14,6 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.net.HttpURLConnection
 import java.time.LocalDateTime
+import java.util.UUID
 
 internal class ArticleRssAdapterTest {
     private lateinit var rssService: RssService
@@ -67,5 +68,8 @@ internal class ArticleRssAdapterTest {
         )
     )
 
-    private fun aSource() = Source(mockWebServer.url("/feed.xml").toString())
+    private fun aSource() = Source(
+        UUID.fromString("57133977-6266-4f62-9335-b9150bd453a2"),
+        mockWebServer.url("/feed.xml").toString()
+    )
 }

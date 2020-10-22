@@ -19,6 +19,7 @@ import java.time.Clock
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.UUID
 
 internal class SendNewsletterTest {
     private lateinit var sourcePort: SourcePort
@@ -99,9 +100,15 @@ internal class SendNewsletterTest {
 
     private fun aRecipient() = Recipient("John Doe", "john.doe@email.com")
 
-    private fun aNewsSource() = Source("https://www.lemonde.fr/rss/une.xml")
+    private fun aNewsSource() = Source(
+        UUID.fromString("67e59d0e-c7ab-4027-a8d5-74adb66eefc2"),
+        "https://www.lemonde.fr/rss/une.xml"
+    )
 
-    private fun aTechSource() = Source("https://blog.octo.com/feed/")
+    private fun aTechSource() = Source(
+        UUID.fromString("a417d43b-4441-48b0-95de-13cbc3050745"),
+        "https://blog.octo.com/feed/"
+    )
 
     private fun aTechArticle() =
         Article("Some tech article title", "http://tech.com/link", today())
