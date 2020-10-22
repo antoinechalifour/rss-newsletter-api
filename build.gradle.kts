@@ -39,6 +39,7 @@ dependencies {
     implementation("org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE")
 
     // Database
+    implementation("org.liquibase:liquibase-core:4.1.1")
     runtimeOnly("org.postgresql:postgresql:42.2.18")
 
     // Tests
