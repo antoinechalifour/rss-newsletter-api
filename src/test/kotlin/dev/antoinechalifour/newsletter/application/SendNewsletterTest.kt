@@ -1,6 +1,7 @@
 package dev.antoinechalifour.newsletter.application
 
 import com.nhaarman.mockitokotlin2.verify
+import dev.antoinechalifour.newsletter.basicAuth
 import dev.antoinechalifour.newsletter.usecase.SendNewsletter
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

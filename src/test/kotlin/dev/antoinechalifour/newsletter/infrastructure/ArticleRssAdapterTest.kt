@@ -1,5 +1,6 @@
 package dev.antoinechalifour.newsletter.infrastructure
 
+import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.domain.Article
 import dev.antoinechalifour.newsletter.domain.Source
 import okhttp3.mockwebserver.MockResponse
@@ -49,7 +50,7 @@ internal class ArticleRssAdapterTest {
 
     private fun aValidRssFeed() = MockResponse()
         .setResponseCode(HttpURLConnection.HTTP_OK)
-        .setBody("/rss-feed.xml".asFile())
+        .setBody("/test-http/rss-feed.xml".asTestResourceFileContent())
 
     private fun theArticles() = listOf(
         Article(
@@ -66,5 +67,3 @@ internal class ArticleRssAdapterTest {
 
     private fun aSource() = Source(mockWebServer.url("/feed.xml").toString())
 }
-
-private fun String.asFile() = ArticleRssAdapterTest::class.java.getResource(this).readText()

@@ -1,0 +1,34 @@
+<mjml>
+    <mj-body background-color="#f1f1f1">
+        <mj-section>
+            <mj-column>
+                <mj-divider border-color="#aaa"></mj-divider>
+                <mj-text font-size="20px" color="#373737" font-family="helvetica" align="center">
+                    Your newsletter is here
+                </mj-text>
+                <mj-divider border-color="#aaa"></mj-divider>
+            </mj-column>
+        </mj-section>
+
+        <mj-wrapper th:each="article,index : ${articles}" padding="10px 0px">
+            <mj-section th:background-color="${index.odd}? 'rgba(0, 0, 0, .02)' : 'transparent'">
+                <mj-column width="75%">
+                    <mj-text font-size="20px" color="#373737" font-family="helvetica" line-height="1.5">
+                        <span th:text="${article.title}"></span>
+                    </mj-text>
+
+                    <mj-text color="#555">
+                        Published at <span th:text="${#temporals.format(article.pubDate, 'dd-MM-yyyy HH:mm')}"></span>
+                    </mj-text>
+                </mj-column>
+
+                <mj-column width="25%" vertical-align="bottom">
+                    <mj-text>
+                        <a th:href="@{${article.url}}">Read more</a>
+                    </mj-text>
+                </mj-column>
+            </mj-section>
+        </mj-wrapper>
+
+    </mj-body>
+</mjml>
