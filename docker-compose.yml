@@ -14,3 +14,12 @@ services:
       POSTGRES_USER: dev
       POSTGRES_PASSWORD: dev
       POSTGRES_DB: newsletter
+
+  database_integration_tests:
+    image: postgres:13.0
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: newsletter
