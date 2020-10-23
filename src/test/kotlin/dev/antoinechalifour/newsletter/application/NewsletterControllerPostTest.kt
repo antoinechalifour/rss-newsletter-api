@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.post
 
 @SpringBootTest
 @AutoConfigureMockMvc
-internal class SendNewsletterTest {
+internal class NewsletterControllerPostTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 

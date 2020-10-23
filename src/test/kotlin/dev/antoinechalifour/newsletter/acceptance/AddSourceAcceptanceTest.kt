@@ -1,11 +1,9 @@
-package dev.antoinechalifour.newsletter.application
+package dev.antoinechalifour.newsletter.acceptance
 
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.basicAuth
 import dev.antoinechalifour.newsletter.infrastructure.database.SourceRepository
 import org.assertj.core.api.Assertions.assertThat
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.core.Is.isA
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -37,11 +35,6 @@ internal class AddSourceAcceptanceTest {
             basicAuth("admin", "passwd")
             contentType = MediaType.APPLICATION_JSON
             content = "/test-http/create-source.json".asTestResourceFileContent()
-        }.andExpect {
-            jsonPath("$.id", isA<String>(String::class.java))
-            jsonPath("$.url", equalTo("http://tech.com/rss.xml"))
-            content { contentType(MediaType.APPLICATION_JSON) }
-            status { isCreated }
         }
 
         // Then

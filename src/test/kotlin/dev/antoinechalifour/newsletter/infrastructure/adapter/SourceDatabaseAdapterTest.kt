@@ -1,13 +1,14 @@
 package dev.antoinechalifour.newsletter.infrastructure.adapter
 
 import dev.antoinechalifour.newsletter.domain.Source
-import dev.antoinechalifour.newsletter.infrastructure.database.SourceDatabase
 import dev.antoinechalifour.newsletter.infrastructure.database.SourceRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import java.lang.IllegalStateException
 import java.util.UUID
 
 @SpringBootTest
@@ -27,33 +28,44 @@ internal class SourceDatabaseAdapterTest {
     @Test
     fun `returns all the sources`() {
         // Given
-        val newsSourceDatabase = aNewsSourceDatabase()
-        val techSourceDatabase = aTechSourceDatabase()
-        sourceRepository.saveAll(listOf(newsSourceDatabase, techSourceDatabase))
+        val newsSource = aNewsSource()
+        val techSource = aTechSource()
 
         // When
-        val sources = sourceDatabaseAdapter.all()
+        sourceDatabaseAdapter.save(newsSource, techSource)
 
         // Then
-        assertThat(sources).usingRecursiveComparison().isEqualTo(
-            listOf(
-                theNewsSource(newsSourceDatabase.id),
-                theTechSource(techSourceDatabase.id)
-            )
-        )
+        assertThat(sourceDatabaseAdapter.all())
+            .usingRecursiveComparison()
+            .isEqualTo(listOf(newsSource, techSource))
     }
 
-    private fun theNewsSource(id: UUID?) = Source(checkNotNull(id), "http://news.com/rss.xml")
+    @Test
+    fun `saves a source`() {
+        // Given
+        val source = Source(UUID.randomUUID(), "http://source.com/rss.xml")
 
-    private fun theTechSource(id: UUID?) = Source(checkNotNull(id), "http://tech.com/rss.xml")
+        // When
+        sourceDatabaseAdapter.save(source)
 
-    private fun aNewsSourceDatabase() = SourceDatabase().apply {
-        id = UUID.randomUUID()
-        url = "http://news.com/rss.xml"
+        // Then
+        val sourceFromDatabase = sourceDatabaseAdapter.ofId(source.id)
+
+        assertThat(sourceFromDatabase).isEqualTo(source)
     }
 
-    private fun aTechSourceDatabase() = SourceDatabase().apply {
-        id = UUID.randomUUID()
-        url = "http://tech.com/rss.xml"
+    @Test
+    fun `throw an exception when the source is not found`() {
+        val idWithoutSource = UUID.randomUUID()
+
+        assertThatThrownBy { sourceDatabaseAdapter.ofId(idWithoutSource) }
+            .isInstanceOf(NoSuchElementException::class.java)
+            .hasMessage("Source of id $idWithoutSource was not found")
     }
+
+    private fun aNewsSource() = Source(UUID.randomUUID(), "http://news.com/rss.xml")
+
+    private fun aTechSource() = Source(UUID.randomUUID(), "http://tech.com/rss.xml")
 }
+
+private fun SourceDatabaseAdapter.save(vararg sources: Source) = sources.forEach { save(it) }
