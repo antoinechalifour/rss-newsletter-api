@@ -1,6 +1,8 @@
 package dev.antoinechalifour.newsletter.domain
 
-interface NewsletterConfigurationPort {
-    fun save(newsletterConfiguration: NewsletterConfiguration)
+import java.util.UUID
 
+interface NewsletterConfigurationPort {
+    fun ofId(id: UUID): NewsletterConfiguration
+    fun save(newsletterConfiguration: NewsletterConfiguration)
 }
