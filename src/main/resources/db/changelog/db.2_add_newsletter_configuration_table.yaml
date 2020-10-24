@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-newsletter_configuration
+      author: antoinechalifour
+      changes:
+        - createTable:
+            tableName: newsletter_configuration
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+
+        - addColumn:
+            tableName: source
+            columns:
+              - column:
+                  name: newsletter_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_source_newsletter_configuration
+                    references: newsletter_configuration(id)
