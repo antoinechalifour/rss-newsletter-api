@@ -1,7 +1,9 @@
-package dev.antoinechalifour.newsletter.infrastructure
+package dev.antoinechalifour.newsletter.infrastructure.adapter
 
 import dev.antoinechalifour.newsletter.domain.Newsletter
 import dev.antoinechalifour.newsletter.domain.NewsletterPort
+import dev.antoinechalifour.newsletter.infrastructure.http.mjml.MjmlBody
+import dev.antoinechalifour.newsletter.infrastructure.http.mjml.MjmlService
 import org.simplejavamail.api.mailer.Mailer
 import org.simplejavamail.email.EmailBuilder
 import org.springframework.beans.factory.annotation.Qualifier
@@ -33,7 +35,11 @@ class NewsletterSmtpAdapter(
         }
 
         val mjml = emailTemplates.process("newsletter", context)
-        val response = mjmlService.render(MjmlBody(mjml)).execute()
+        val response = mjmlService.render(
+            MjmlBody(
+                mjml
+            )
+        ).execute()
 
         return response.body()?.html ?: throw IllegalStateException("Mjml service down")
     }

@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-source
+      author: antoinechalifour
+      changes:
+        - createTable:
+            tableName: source
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+
+              - column:
+                  name: url
+                  type: text
+                  constraints:
+                    nullable: false

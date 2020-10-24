@@ -1,4 +1,4 @@
-package dev.antoinechalifour.newsletter.infrastructure
+package dev.antoinechalifour.newsletter.infrastructure.http.rss
 
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList

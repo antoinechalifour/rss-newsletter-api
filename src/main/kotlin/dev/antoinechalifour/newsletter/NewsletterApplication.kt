@@ -1,8 +1,8 @@
 package dev.antoinechalifour.newsletter
 
 import dev.antoinechalifour.newsletter.domain.Recipient
-import dev.antoinechalifour.newsletter.infrastructure.MjmlService
-import dev.antoinechalifour.newsletter.infrastructure.RssService
+import dev.antoinechalifour.newsletter.infrastructure.http.mjml.MjmlService
+import dev.antoinechalifour.newsletter.infrastructure.http.rss.RssService
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import org.simplejavamail.springsupport.SimpleJavaMailSpringSupport

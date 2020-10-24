@@ -1,4 +1,4 @@
-package dev.antoinechalifour.newsletter.infrastructure
+package dev.antoinechalifour.newsletter.infrastructure.http.rss
 
 import retrofit2.Call
 import retrofit2.http.GET

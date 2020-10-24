@@ -2,3 +2,14 @@ language: java
 
 jdk:
   - openjdk11
+
+services:
+  - postgresql
+
+env:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/newsletter
+  SPRING_DATASOURCE_USERNAME: postgres
+  SPRING_DATASOURCE_PASSWORD: ""
+
+before_script:
+  - psql -c 'create database newsletter;' -U postgres
