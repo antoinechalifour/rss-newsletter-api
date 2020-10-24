@@ -39,10 +39,10 @@ internal class SourceControllerPostTest {
             contentType = MediaType.APPLICATION_JSON
             content = "/test-http/create-source.json".asTestResourceFileContent()
         }.andExpect {
+            status { isCreated }
+            content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id", equalTo(source.id.toString()))
             jsonPath("$.url", equalTo(source.url))
-            content { contentType(MediaType.APPLICATION_JSON) }
-            status { isCreated }
         }
 
         // Then
