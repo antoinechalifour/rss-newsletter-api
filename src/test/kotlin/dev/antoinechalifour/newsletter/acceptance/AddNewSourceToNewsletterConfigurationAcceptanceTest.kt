@@ -18,7 +18,7 @@ import java.util.UUID
 
 @SpringBootTest
 @AutoConfigureMockMvc
-internal class AddSourceAcceptanceTest {
+internal class AddNewSourceToNewsletterConfigurationAcceptanceTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -36,9 +36,9 @@ internal class AddSourceAcceptanceTest {
     }
 
     @Test
-    fun `creates a new source`() {
+    fun `adds a new source to the existing newsletter configuration`() {
         // When
-        mockMvc.post("/api/v1/sources") {
+        mockMvc.post("/api/v1/newsletter-configuration/${newsletterConfigurationId}/sources") {
             basicAuth("admin", "passwd")
             contentType = MediaType.APPLICATION_JSON
             content = "/test-http/create-source.json".asTestResourceFileContent()
@@ -47,7 +47,7 @@ internal class AddSourceAcceptanceTest {
         // Then
         val newsletterConfiguration = newsletterConfigurationPort.ofId(newsletterConfigurationId)
 
-        assertThat(newsletterConfiguration.sources).hasSize(1)
+        assertThat(newsletterConfiguration.sources).hasSize(1) // TODO: custom assertions ?
         assertThat(newsletterConfiguration.sources[0]).hasFieldOrPropertyWithValue("url", "http://tech.com/rss.xml")
     }
 }

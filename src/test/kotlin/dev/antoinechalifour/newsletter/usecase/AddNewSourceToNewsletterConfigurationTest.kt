@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-internal class AddNewSourceTest {
+internal class AddNewSourceToNewsletterConfigurationTest {
     private lateinit var newsletterConfigurationPort: NewsletterConfigurationPort
     private lateinit var newsletterConfiguration: NewsletterConfiguration
 
@@ -23,12 +23,12 @@ internal class AddNewSourceTest {
     }
 
     @Test
-    fun `creates and save the source`() {
+    fun `creates a new source for the requested newsletter configuration`() {
         // Given
         whenever(newsletterConfigurationPort.ofId(newsletterConfiguration.id))
             .thenReturn(newsletterConfiguration)
 
-        val addNewSource = AddNewSource(newsletterConfigurationPort)
+        val addNewSource = AddNewSourceToNewsletterConfiguration(newsletterConfigurationPort)
         val url = "http://source.com/rss.xml"
 
         // When

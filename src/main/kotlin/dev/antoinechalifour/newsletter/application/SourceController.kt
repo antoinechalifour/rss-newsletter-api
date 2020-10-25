@@ -1,7 +1,7 @@
 package dev.antoinechalifour.newsletter.application
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import dev.antoinechalifour.newsletter.usecase.AddNewSource
+import dev.antoinechalifour.newsletter.usecase.AddNewSourceToNewsletterConfiguration
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/newsletter-configuration/{newsletterConfigurationId}/sources")
-class SourceController(val addNewSource: AddNewSource) {
+class SourceController(val addNewSourceToNewsletterConfiguration: AddNewSourceToNewsletterConfiguration) {
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     fun post(
         @PathVariable newsletterConfigurationId: String,
         @RequestBody body: AddNewSourceBody
     ): ResponseEntity<NewsletterConfigurationResponse> {
-        val newsletterConfiguration = addNewSource(newsletterConfigurationId, body.url)
+        val newsletterConfiguration = addNewSourceToNewsletterConfiguration(newsletterConfigurationId, body.url)
 
         return ResponseEntity.status(201)
             .body(NewsletterConfigurationResponse.of(newsletterConfiguration))

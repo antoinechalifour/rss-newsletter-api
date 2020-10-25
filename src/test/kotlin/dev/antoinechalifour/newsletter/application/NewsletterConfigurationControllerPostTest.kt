@@ -26,7 +26,7 @@ internal class NewsletterConfigurationControllerPostTest {
     private lateinit var createNewsletterConfiguration: CreateNewsletterConfiguration
 
     @Test
-    fun `returns the ID of the created newsletter configuration`() {
+    fun `returns a newly created newsletter configuration`() {
         // Given
         val newsletterConfiguration = NewsletterConfiguration(UUID.randomUUID())
         whenever(createNewsletterConfiguration()).thenReturn(newsletterConfiguration)
@@ -40,4 +40,6 @@ internal class NewsletterConfigurationControllerPostTest {
                 content { contentType(MediaType.APPLICATION_JSON) }
             }
     }
+
+    // TODO: add tests for 401
 }

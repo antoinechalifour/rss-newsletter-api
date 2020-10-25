@@ -6,7 +6,7 @@ import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.basicAuth
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
 import dev.antoinechalifour.newsletter.domain.Source
-import dev.antoinechalifour.newsletter.usecase.AddNewSource
+import dev.antoinechalifour.newsletter.usecase.AddNewSourceToNewsletterConfiguration
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,7 +26,7 @@ internal class SourceControllerPostTest {
     private val newSourceUrl = "http://tech.com/rss.xml"
 
     @MockBean
-    private lateinit var addNewSource: AddNewSource
+    private lateinit var addNewSourceToNewsletterConfiguration: AddNewSourceToNewsletterConfiguration
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -36,18 +36,10 @@ internal class SourceControllerPostTest {
         newsletterConfiguration = aNewsletterConfiguration()
     }
 
-
-    private fun aNewsletterConfiguration() = NewsletterConfiguration(
-        UUID.randomUUID(), mutableListOf(theSourceWithUrl(newSourceUrl))
-    )
-
-    private fun theSourceWithUrl(url: String) = Source(UUID.randomUUID(), url)
-
     @Test
-    fun `returns the created source`() { // TODO: rename this test
+    fun `returns the updated newsletter configuration containing the new source`() {
         // Given
-        val newSource = newsletterConfiguration.sources[0]
-        whenever(addNewSource.invoke(newsletterConfiguration.id.toString(), newSourceUrl))
+        whenever(addNewSourceToNewsletterConfiguration.invoke(newsletterConfiguration.id.toString(), newSourceUrl))
             .thenReturn(newsletterConfiguration)
 
         // When
@@ -56,14 +48,24 @@ internal class SourceControllerPostTest {
             contentType = MediaType.APPLICATION_JSON
             content = "/test-http/create-source.json".asTestResourceFileContent()
         }.andExpect {
+            val newSource = newsletterConfiguration.sources[0]
+
+            status { isCreated }
+            content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id", equalTo(newsletterConfiguration.id.toString()))
             jsonPath("$.sources[0].id", equalTo(newSource.id.toString()))
             jsonPath("$.sources[0].url", equalTo(newSource.url))
-//            status { isCreated }
-//            content { contentType(MediaType.APPLICATION_JSON) }
         }
 
         // Then
-        verify(addNewSource).invoke(newsletterConfiguration.id.toString(), newSourceUrl)
+        verify(addNewSourceToNewsletterConfiguration).invoke(newsletterConfiguration.id.toString(), newSourceUrl)
     }
+
+    // TODO: add tests for 404 and 401
+
+    private fun aNewsletterConfiguration() = NewsletterConfiguration(
+        UUID.randomUUID(), mutableListOf(theSourceWithUrl(newSourceUrl))
+    )
+
+    private fun theSourceWithUrl(url: String) = Source(UUID.randomUUID(), url)
 }
