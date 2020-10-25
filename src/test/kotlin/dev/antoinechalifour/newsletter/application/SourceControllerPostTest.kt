@@ -31,7 +31,7 @@ internal class SourceControllerPostTest {
     fun `returns the created source`() {
         // Given
         val source = Source(UUID.randomUUID(), "http://tech.com/rss.xml")
-        whenever(addNewSource.invoke("http://tech.com/rss.xml")).thenReturn(source)
+        whenever(addNewSource.invoke("", "http://tech.com/rss.xml")).thenReturn(source)
 
         // When
         mockMvc.post("/api/v1/sources") {
@@ -46,6 +46,6 @@ internal class SourceControllerPostTest {
         }
 
         // Then
-        verify(addNewSource).invoke(source.url)
+        verify(addNewSource).invoke("", source.url)
     }
 }

@@ -2,6 +2,8 @@ package dev.antoinechalifour.newsletter.acceptance
 
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.basicAuth
+import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
+import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
 import dev.antoinechalifour.newsletter.infrastructure.database.SourceRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -12,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
+import java.util.UUID
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -21,11 +24,15 @@ internal class AddSourceAcceptanceTest {
     private lateinit var mockMvc: MockMvc
 
     @Autowired
-    private lateinit var sourceRepository: SourceRepository
+    private lateinit var newsletterConfigurationPort: NewsletterConfigurationPort
+
+    private lateinit var newsletterConfigurationId: UUID
 
     @BeforeEach
     fun setup() {
-        sourceRepository.deleteAll()
+        newsletterConfigurationId = UUID.randomUUID()
+        val newsletterConfiguration = NewsletterConfiguration(newsletterConfigurationId)
+        newsletterConfigurationPort.save(newsletterConfiguration)
     }
 
     @Test
@@ -38,9 +45,9 @@ internal class AddSourceAcceptanceTest {
         }
 
         // Then
-        val sources = sourceRepository.findAll()
+        val newsletterConfiguration = newsletterConfigurationPort.ofId(newsletterConfigurationId)
 
-        assertThat(sources).hasSize(1)
-        assertThat(sources[0]).hasFieldOrPropertyWithValue("url", "http://tech.com/rss.xml")
+        assertThat(newsletterConfiguration.sources).hasSize(1)
+        assertThat(newsletterConfiguration.sources[0]).hasFieldOrPropertyWithValue("url", "http://tech.com/rss.xml")
     }
 }

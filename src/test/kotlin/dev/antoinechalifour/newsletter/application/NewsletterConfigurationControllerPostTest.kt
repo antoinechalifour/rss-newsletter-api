@@ -36,6 +36,7 @@ internal class NewsletterConfigurationControllerPostTest {
             .andExpect {
                 status { isCreated }
                 jsonPath("$.id", equalTo(newsletterConfiguration.id.toString()))
+                jsonPath("$.sources", equalTo(emptyList<Any>()))
                 content { contentType(MediaType.APPLICATION_JSON) }
             }
     }

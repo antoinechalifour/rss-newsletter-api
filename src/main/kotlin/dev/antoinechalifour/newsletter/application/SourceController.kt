@@ -16,7 +16,7 @@ class SourceController(val addNewSource: AddNewSource) {
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     fun post(@RequestBody body: AddNewSourceBody): ResponseEntity<SourceResponse> {
-        val source = addNewSource(body.url)
+        val source = addNewSource("", body.url)
 
         return ResponseEntity.status(201)
             .body(SourceResponse.of(source))

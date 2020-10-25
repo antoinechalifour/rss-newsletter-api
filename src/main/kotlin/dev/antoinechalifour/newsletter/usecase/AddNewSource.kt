@@ -1,16 +1,20 @@
 package dev.antoinechalifour.newsletter.usecase
 
+import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
 import dev.antoinechalifour.newsletter.domain.Source
-import dev.antoinechalifour.newsletter.domain.SourcePort
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
-class AddNewSource(val sourcePort: SourcePort) {
-    operator fun invoke(url: String): Source {
-        val source = Source.of(url)
+class AddNewSource(val newsletterConfigurationPort: NewsletterConfigurationPort) {
+    // TODO: return NewsletterConfiguration
+    operator fun invoke(newsletterId: String, url: String): Source {
+        val newsletterConfiguration = newsletterConfigurationPort
+            .ofId(UUID.fromString(newsletterId))
+            .apply { newSource(url) }
 
-        sourcePort.save(source)
+        newsletterConfigurationPort.save(newsletterConfiguration)
 
-        return source
+        return Source(UUID.randomUUID(), "")
     }
 }
