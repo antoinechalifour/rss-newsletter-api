@@ -17,7 +17,7 @@ class SendNewsletter(
     private val newsletterPort: NewsletterPort
 ) {
     operator fun invoke() {
-        newsletterConfigurationPort.all().forEach {
+        newsletterConfigurationPort.all().forEach { // TODO: async
             val articles = it.sources.map(articlePort::ofSource).flatten()
 
             Newsletter.forToday(recipient, articles, clock).run {
