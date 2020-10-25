@@ -9,9 +9,5 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/newsletter")
 class NewsletterController(val sendNewsletter: SendNewsletter) {
     @PostMapping
-    fun post(): String {
-        sendNewsletter()
-
-        return "Newsletter sent!"
-    }
+    fun post(): String = sendNewsletter().run { "Newsletter sent!" }
 }

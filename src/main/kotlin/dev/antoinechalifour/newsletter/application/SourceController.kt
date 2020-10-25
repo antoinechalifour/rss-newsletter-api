@@ -18,12 +18,11 @@ class SourceController(val addNewSourceToNewsletterConfiguration: AddNewSourceTo
     fun post(
         @PathVariable newsletterConfigurationId: String,
         @RequestBody body: AddNewSourceBody
-    ): ResponseEntity<NewsletterConfigurationResponse> {
-        val newsletterConfiguration = addNewSourceToNewsletterConfiguration(newsletterConfigurationId, body.url)
-
-        return ResponseEntity.status(201)
-            .body(NewsletterConfigurationResponse.of(newsletterConfiguration))
-    }
+    ): ResponseEntity<NewsletterConfigurationResponse> =
+        addNewSourceToNewsletterConfiguration(newsletterConfigurationId, body.url).run {
+            ResponseEntity.status(201)
+                .body(NewsletterConfigurationResponse.of(this))
+        }
 
     data class AddNewSourceBody(@JsonProperty("url") val url: String)
 
