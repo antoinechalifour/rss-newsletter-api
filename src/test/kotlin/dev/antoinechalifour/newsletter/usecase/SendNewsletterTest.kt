@@ -8,10 +8,11 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import dev.antoinechalifour.newsletter.domain.Article
 import dev.antoinechalifour.newsletter.domain.ArticlePort
+import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
+import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
 import dev.antoinechalifour.newsletter.domain.NewsletterPort
 import dev.antoinechalifour.newsletter.domain.Recipient
 import dev.antoinechalifour.newsletter.domain.Source
-import dev.antoinechalifour.newsletter.domain.SourcePort
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,7 +23,7 @@ import java.time.ZoneId
 import java.util.UUID
 
 internal class SendNewsletterTest {
-    private lateinit var sourcePort: SourcePort
+    private lateinit var newsletterConfigurationPort: NewsletterConfigurationPort
     private lateinit var newsletterPort: NewsletterPort
     private lateinit var articlePort: ArticlePort
     private val clock = Clock.fixed(
@@ -32,7 +33,7 @@ internal class SendNewsletterTest {
 
     @BeforeEach
     fun setup() {
-        sourcePort = mock()
+        newsletterConfigurationPort = mock()
         newsletterPort = mock()
         articlePort = mock()
     }
@@ -40,14 +41,16 @@ internal class SendNewsletterTest {
     @Test
     fun `sends the newsletter with articles from multiple sources`() {
         // Given
-        val sendNewsletter = SendNewsletter(aRecipient(), clock, sourcePort, articlePort, newsletterPort)
-        val sources = listOf(aTechSource(), aNewsSource())
+        val sendNewsletter =
+            SendNewsletter(aRecipient(), clock, newsletterConfigurationPort, articlePort, newsletterPort)
+        val newsletterConfiguration = aNewsletterConfiguration()
 
-        // When
-        whenever(sourcePort.all()).thenReturn(sources)
+        whenever(newsletterConfigurationPort.ofId(newsletterConfiguration.id)).thenReturn(newsletterConfiguration)
         whenever(articlePort.ofSource(aTechSource())).thenReturn(listOf(aTechArticle()))
         whenever(articlePort.ofSource(aNewsSource())).thenReturn(listOf(aNewsArticle()))
-        sendNewsletter()
+
+        // When
+        sendNewsletter(newsletterConfiguration.id.toString())
 
         // Then
         verify(newsletterPort).send(
@@ -61,18 +64,19 @@ internal class SendNewsletterTest {
     @Test
     fun `sends only articles published from yesteday 12 30pm`() {
         // Given
-        val sendNewsletter = SendNewsletter(aRecipient(), clock, sourcePort, articlePort, newsletterPort)
-        val sources = listOf(aTechSource(), aNewsSource())
-
-        // When
-        whenever(sourcePort.all()).thenReturn(sources)
+        val sendNewsletter =
+            SendNewsletter(aRecipient(), clock, newsletterConfigurationPort, articlePort, newsletterPort)
+        val newsletterConfiguration = aNewsletterConfiguration()
+        whenever(newsletterConfigurationPort.ofId(newsletterConfiguration.id)).thenReturn(newsletterConfiguration)
         whenever(articlePort.ofSource(aTechSource())).thenReturn(
             listOf(
                 aTechArticle(),
                 aTechArticleFromYesterday()
             )
         )
-        sendNewsletter()
+
+        // When
+        sendNewsletter(newsletterConfiguration.id.toString())
 
         // Then
         verify(newsletterPort).send(
@@ -86,13 +90,14 @@ internal class SendNewsletterTest {
     @Test
     fun `does not send the newsletter when no articles have been published`() {
         // Given
-        val sendNewsletter = SendNewsletter(aRecipient(), clock, sourcePort, articlePort, newsletterPort)
-        val sources = listOf(aTechSource(), aNewsSource())
+        val sendNewsletter =
+            SendNewsletter(aRecipient(), clock, newsletterConfigurationPort, articlePort, newsletterPort)
+        val newsletterConfiguration = aNewsletterConfiguration()
+        whenever(newsletterConfigurationPort.ofId(newsletterConfiguration.id)).thenReturn(newsletterConfiguration)
+        whenever(articlePort.ofSource(aTechSource())).thenReturn(emptyList())
 
         // When
-        whenever(sourcePort.all()).thenReturn(sources)
-        whenever(articlePort.ofSource(aTechSource())).thenReturn(emptyList())
-        sendNewsletter()
+        sendNewsletter(newsletterConfiguration.id.toString())
 
         // Then
         verify(newsletterPort, never()).send(any())
@@ -118,6 +123,9 @@ internal class SendNewsletterTest {
 
     private fun aNewsArticle() =
         Article("Some news article title", "http://news.com/link", today())
+
+    private fun aNewsletterConfiguration() =
+        NewsletterConfiguration(UUID.randomUUID(), mutableListOf(aTechSource(), aNewsSource()))
 
     private fun now() = Instant.parse("2020-10-19T17:30:00.00Z")
 

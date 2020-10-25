@@ -1,0 +1,33 @@
+package dev.antoinechalifour.newsletter.acceptance
+
+import dev.antoinechalifour.newsletter.basicAuth
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.post
+
+@SpringBootTest
+@AutoConfigureMockMvc
+class CreateNewsletterConfigurationAcceptanceTest : AcceptanceTest() {
+
+    @Autowired
+    private lateinit var mockMvc: MockMvc
+
+    @BeforeEach
+    fun setup() {
+        cleanupDatabase()
+    }
+
+    @Test
+    fun `creates a new newsletter configuration`() {
+        // When
+        mockMvc.post("/api/v1/newsletter-configuration") { basicAuth("admin", "passwd") }
+
+        // Then
+        assertThat(newsletterConfigurationRepository.findAll()).hasSize(1)
+    }
+}

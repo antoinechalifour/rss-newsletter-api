@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: db/changelog/db.1_add_source_table.yaml
+  - include:
+      file: db/changelog/db.2_add_newsletter_configuration_table.yaml

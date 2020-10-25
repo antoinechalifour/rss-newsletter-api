@@ -5,4 +5,4 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface SourceRepository : JpaRepository<SourceDatabase, UUID>
+interface NewsletterConfigurationRepository : JpaRepository<NewsletterConfigurationDatabase, UUID>
