@@ -7,11 +7,6 @@ import java.util.UUID
 
 @Component
 class CreateNewsletterConfiguration(val newsletterConfigurationPort: NewsletterConfigurationPort) {
-    operator fun invoke(): NewsletterConfiguration {
-        val newsletterConfiguration = NewsletterConfiguration(UUID.randomUUID())
-
-        newsletterConfigurationPort.save(newsletterConfiguration)
-
-        return newsletterConfiguration
-    }
+    operator fun invoke() = NewsletterConfiguration(UUID.randomUUID())
+        .apply { newsletterConfigurationPort.save(this) }
 }
