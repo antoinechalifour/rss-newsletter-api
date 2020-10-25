@@ -38,16 +38,19 @@ internal class SendNewsletterTest {
         articlePort = mock()
     }
 
-    @Test // TODO: multiple configurations
+    @Test
     fun `sends the newsletter with articles from multiple sources`() {
         // Given
-        val sendNewsletter = SendNewsletter(aRecipient(), clock, newsletterConfigurationPort, articlePort, newsletterPort)
+        val sendNewsletter =
+            SendNewsletter(aRecipient(), clock, newsletterConfigurationPort, articlePort, newsletterPort)
+        val newsletterConfiguration = aNewsletterConfiguration()
 
-        // When
-        whenever(newsletterConfigurationPort.all()).thenReturn(allNewsletterConfigurations())
+        whenever(newsletterConfigurationPort.ofId(newsletterConfiguration.id)).thenReturn(newsletterConfiguration)
         whenever(articlePort.ofSource(aTechSource())).thenReturn(listOf(aTechArticle()))
         whenever(articlePort.ofSource(aNewsSource())).thenReturn(listOf(aNewsArticle()))
-        sendNewsletter()
+
+        // When
+        sendNewsletter(newsletterConfiguration.id.toString())
 
         // Then
         verify(newsletterPort).send(
@@ -61,17 +64,19 @@ internal class SendNewsletterTest {
     @Test
     fun `sends only articles published from yesteday 12 30pm`() {
         // Given
-        val sendNewsletter = SendNewsletter(aRecipient(), clock, newsletterConfigurationPort, articlePort, newsletterPort)
-
-        // When
-        whenever(newsletterConfigurationPort.all()).thenReturn(allNewsletterConfigurations())
+        val sendNewsletter =
+            SendNewsletter(aRecipient(), clock, newsletterConfigurationPort, articlePort, newsletterPort)
+        val newsletterConfiguration = aNewsletterConfiguration()
+        whenever(newsletterConfigurationPort.ofId(newsletterConfiguration.id)).thenReturn(newsletterConfiguration)
         whenever(articlePort.ofSource(aTechSource())).thenReturn(
             listOf(
                 aTechArticle(),
                 aTechArticleFromYesterday()
             )
         )
-        sendNewsletter()
+
+        // When
+        sendNewsletter(newsletterConfiguration.id.toString())
 
         // Then
         verify(newsletterPort).send(
@@ -85,12 +90,14 @@ internal class SendNewsletterTest {
     @Test
     fun `does not send the newsletter when no articles have been published`() {
         // Given
-        val sendNewsletter = SendNewsletter(aRecipient(), clock, newsletterConfigurationPort, articlePort, newsletterPort)
+        val sendNewsletter =
+            SendNewsletter(aRecipient(), clock, newsletterConfigurationPort, articlePort, newsletterPort)
+        val newsletterConfiguration = aNewsletterConfiguration()
+        whenever(newsletterConfigurationPort.ofId(newsletterConfiguration.id)).thenReturn(newsletterConfiguration)
+        whenever(articlePort.ofSource(aTechSource())).thenReturn(emptyList())
 
         // When
-        whenever(newsletterConfigurationPort.all()).thenReturn(allNewsletterConfigurations())
-        whenever(articlePort.ofSource(aTechSource())).thenReturn(emptyList())
-        sendNewsletter()
+        sendNewsletter(newsletterConfiguration.id.toString())
 
         // Then
         verify(newsletterPort, never()).send(any())
@@ -117,9 +124,8 @@ internal class SendNewsletterTest {
     private fun aNewsArticle() =
         Article("Some news article title", "http://news.com/link", today())
 
-    private fun allNewsletterConfigurations() = listOf(
+    private fun aNewsletterConfiguration() =
         NewsletterConfiguration(UUID.randomUUID(), mutableListOf(aTechSource(), aNewsSource()))
-    )
 
     private fun now() = Instant.parse("2020-10-19T17:30:00.00Z")
 

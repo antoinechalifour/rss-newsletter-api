@@ -7,6 +7,7 @@ import dev.antoinechalifour.newsletter.domain.NewsletterPort
 import dev.antoinechalifour.newsletter.domain.Recipient
 import org.springframework.stereotype.Component
 import java.time.Clock
+import java.util.UUID
 
 @Component
 class SendNewsletter(
@@ -16,9 +17,9 @@ class SendNewsletter(
     private val articlePort: ArticlePort,
     private val newsletterPort: NewsletterPort
 ) {
-    operator fun invoke() {
-        newsletterConfigurationPort.all().forEach {
-            val articles = it.sources.map(articlePort::ofSource).flatten()
+    operator fun invoke(newsletterConfigurationId: String) {
+        newsletterConfigurationPort.ofId(UUID.fromString(newsletterConfigurationId)).apply {
+            val articles = sources.map(articlePort::ofSource).flatten()
 
             Newsletter.forToday(recipient, articles, clock).run {
                 if (isWorthSending()) newsletterPort.send(this)

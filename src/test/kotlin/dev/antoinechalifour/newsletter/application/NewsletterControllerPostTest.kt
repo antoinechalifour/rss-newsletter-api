@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.post
+import java.util.UUID
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -18,17 +19,21 @@ internal class NewsletterControllerPostTest : ApiIntegrationTest() {
 
     @Test
     fun `should not be accessible without authentication`() {
-        checkAuthentication { post("/newsletter") }
+        checkAuthentication { post("/api/v1/newsletter-configuration/configuration-id/newsletter") }
     }
 
     @Test
     fun `should send the newsletter`() {
-        mockMvc.post("/newsletter") { basicAuth("admin", "passwd") }
+        val newsletterConfigurationId = UUID.randomUUID().toString()
+
+        mockMvc.post("/api/v1/newsletter-configuration/$newsletterConfigurationId/newsletter") {
+            basicAuth("admin", "passwd")
+        }
             .andExpect {
                 status { isOk }
                 content { string("Newsletter sent!") }
             }
 
-        verify(sendNewsletter).invoke()
+        verify(sendNewsletter).invoke(newsletterConfigurationId)
     }
 }
