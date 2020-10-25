@@ -6,18 +6,16 @@ import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
 import dev.antoinechalifour.newsletter.usecase.CreateNewsletterConfiguration
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
 import java.util.UUID
 
 @SpringBootTest
 @AutoConfigureMockMvc
-internal class NewsletterConfigurationControllerPostTest :ApiIntegrationTest() {
+internal class NewsletterConfigurationControllerPostTest : ApiIntegrationTest() {
 
     @MockBean
     private lateinit var createNewsletterConfiguration: CreateNewsletterConfiguration
@@ -42,5 +40,4 @@ internal class NewsletterConfigurationControllerPostTest :ApiIntegrationTest() {
                 content { contentType(MediaType.APPLICATION_JSON) }
             }
     }
-
 }

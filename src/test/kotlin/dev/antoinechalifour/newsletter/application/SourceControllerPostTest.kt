@@ -1,5 +1,6 @@
 package dev.antoinechalifour.newsletter.application
 
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
@@ -10,12 +11,10 @@ import dev.antoinechalifour.newsletter.usecase.AddNewSourceToNewsletterConfigura
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
 import java.util.UUID
 
@@ -63,7 +62,21 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
         verify(addNewSourceToNewsletterConfiguration).invoke(newsletterConfiguration.id.toString(), newSourceUrl)
     }
 
-    // TODO: add tests for 404
+    @Test
+    fun `returns a 404 when the newsletter configuration is not found`() {
+        // Given
+        whenever(addNewSourceToNewsletterConfiguration.invoke(any(), any())).thenThrow(NoSuchElementException())
+
+        // When
+        // When
+        mockMvc.post("/api/v1/newsletter-configuration/not-a-valid-id/sources") {
+            basicAuth("admin", "passwd")
+            contentType = MediaType.APPLICATION_JSON
+            content = "/test-http/create-source.json".asTestResourceFileContent()
+        }.andExpect {
+            status { isNotFound }
+        }
+    }
 
     private fun aNewsletterConfiguration() = NewsletterConfiguration(
         UUID.randomUUID(), mutableListOf(theSourceWithUrl(newSourceUrl))

@@ -31,5 +31,4 @@ internal class NewsletterControllerPostTest : ApiIntegrationTest() {
 
         verify(sendNewsletter).invoke()
     }
-
 }

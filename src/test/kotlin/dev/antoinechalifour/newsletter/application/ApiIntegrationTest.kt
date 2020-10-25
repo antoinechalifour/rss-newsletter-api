@@ -11,5 +11,4 @@ abstract class ApiIntegrationTest {
     fun checkAuthentication(operation: MockMvc.() -> ResultActionsDsl) = operation(mockMvc).andExpect {
         status { isUnauthorized }
     }
-
 }
