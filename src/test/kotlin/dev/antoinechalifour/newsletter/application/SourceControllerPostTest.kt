@@ -4,9 +4,11 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.basicAuth
+import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
 import dev.antoinechalifour.newsletter.domain.Source
 import dev.antoinechalifour.newsletter.usecase.AddNewSource
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -20,6 +22,8 @@ import java.util.UUID
 @SpringBootTest
 @AutoConfigureMockMvc
 internal class SourceControllerPostTest {
+    private lateinit var newsletterConfiguration: NewsletterConfiguration
+    private val newSourceUrl = "http://tech.com/rss.xml"
 
     @MockBean
     private lateinit var addNewSource: AddNewSource
@@ -27,25 +31,39 @@ internal class SourceControllerPostTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
+    @BeforeEach
+    fun setup() {
+        newsletterConfiguration = aNewsletterConfiguration()
+    }
+
+
+    private fun aNewsletterConfiguration() = NewsletterConfiguration(
+        UUID.randomUUID(), mutableListOf(theSourceWithUrl(newSourceUrl))
+    )
+
+    private fun theSourceWithUrl(url: String) = Source(UUID.randomUUID(), url)
+
     @Test
-    fun `returns the created source`() {
+    fun `returns the created source`() { // TODO: rename this test
         // Given
-        val source = Source(UUID.randomUUID(), "http://tech.com/rss.xml")
-        whenever(addNewSource.invoke("", "http://tech.com/rss.xml")).thenReturn(source)
+        val newSource = newsletterConfiguration.sources[0]
+        whenever(addNewSource.invoke(newsletterConfiguration.id.toString(), newSourceUrl))
+            .thenReturn(newsletterConfiguration)
 
         // When
-        mockMvc.post("/api/v1/sources") {
+        mockMvc.post("/api/v1/newsletter-configuration/${newsletterConfiguration.id}/sources") {
             basicAuth("admin", "passwd")
             contentType = MediaType.APPLICATION_JSON
             content = "/test-http/create-source.json".asTestResourceFileContent()
         }.andExpect {
-            status { isCreated }
-            content { contentType(MediaType.APPLICATION_JSON) }
-            jsonPath("$.id", equalTo(source.id.toString()))
-            jsonPath("$.url", equalTo(source.url))
+            jsonPath("$.id", equalTo(newsletterConfiguration.id.toString()))
+            jsonPath("$.sources[0].id", equalTo(newSource.id.toString()))
+            jsonPath("$.sources[0].url", equalTo(newSource.url))
+//            status { isCreated }
+//            content { contentType(MediaType.APPLICATION_JSON) }
         }
 
         // Then
-        verify(addNewSource).invoke("", source.url)
+        verify(addNewSource).invoke(newsletterConfiguration.id.toString(), newSourceUrl)
     }
 }

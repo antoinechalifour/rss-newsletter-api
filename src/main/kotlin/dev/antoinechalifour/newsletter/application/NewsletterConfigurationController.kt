@@ -1,6 +1,5 @@
 package dev.antoinechalifour.newsletter.application
 
-import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
 import dev.antoinechalifour.newsletter.usecase.CreateNewsletterConfiguration
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -15,14 +14,8 @@ class NewsletterConfigurationController(val createNewsletterConfiguration: Creat
     fun post(): ResponseEntity<Any> {
         val newsletterConfiguration = createNewsletterConfiguration()
 
-        return ResponseEntity.status(201).body(NewsletterConfigurationResponse.of(newsletterConfiguration))
+        return ResponseEntity.status(201)
+            .body(NewsletterConfigurationResponse.of(newsletterConfiguration))
     }
 
-    class NewsletterConfigurationResponse(val id: String) {
-        companion object {
-            fun of(newsletterConfiguration: NewsletterConfiguration) = NewsletterConfigurationResponse(
-                newsletterConfiguration.id.toString()
-            )
-        }
-    }
 }
