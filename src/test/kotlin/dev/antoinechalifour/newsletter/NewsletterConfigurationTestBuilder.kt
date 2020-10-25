@@ -14,4 +14,8 @@ class NewsletterConfigurationTestBuilder {
     fun withSources(vararg theSources: Source) = apply {
         sources = theSources.toMutableList()
     }
+
+    fun withSources(vararg theSources: SourceTestBuilder) = apply {
+        sources = theSources.map { it.build() }.toMutableList()
+    }
 }
