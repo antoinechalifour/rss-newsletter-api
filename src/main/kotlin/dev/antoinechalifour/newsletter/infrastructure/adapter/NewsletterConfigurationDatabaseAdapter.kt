@@ -15,6 +15,10 @@ class NewsletterConfigurationDatabaseAdapter(val newsletterConfigurationReposito
         .map { it.toNewsletterConfiguration() }
         .orElseThrow { NoSuchElementException("Newsletter configuration $id was not found") }
 
+    override fun all(): List<NewsletterConfiguration> {
+        TODO("Not yet implemented")
+    }
+
     override fun save(newsletterConfiguration: NewsletterConfiguration) {
         newsletterConfigurationRepository.save(NewsletterConfigurationDatabase.of(newsletterConfiguration))
     }
