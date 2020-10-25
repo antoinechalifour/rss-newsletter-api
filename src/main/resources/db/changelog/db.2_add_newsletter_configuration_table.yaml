@@ -17,7 +17,7 @@ databaseChangeLog:
             tableName: source
             columns:
               - column:
-                  name: newsletter_id
+                  name: newsletter_configuration_id
                   type: uuid
                   constraints:
                     nullable: false

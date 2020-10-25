@@ -62,7 +62,6 @@ internal class SendNewsletterTest {
     fun `sends only articles published from yesteday 12 30pm`() {
         // Given
         val sendNewsletter = SendNewsletter(aRecipient(), clock, newsletterConfigurationPort, articlePort, newsletterPort)
-        val sources = listOf(aTechSource(), aNewsSource())
 
         // When
         whenever(newsletterConfigurationPort.all()).thenReturn(allNewsletterConfigurations())
@@ -87,7 +86,6 @@ internal class SendNewsletterTest {
     fun `does not send the newsletter when no articles have been published`() {
         // Given
         val sendNewsletter = SendNewsletter(aRecipient(), clock, newsletterConfigurationPort, articlePort, newsletterPort)
-        val sources = listOf(aTechSource(), aNewsSource())
 
         // When
         whenever(newsletterConfigurationPort.all()).thenReturn(allNewsletterConfigurations())
