@@ -1,8 +1,8 @@
 package dev.antoinechalifour.newsletter.infrastructure.adapter
 
+import dev.antoinechalifour.newsletter.SourceTestBuilder
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.domain.Article
-import dev.antoinechalifour.newsletter.domain.Source
 import dev.antoinechalifour.newsletter.infrastructure.http.rss.RssService
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -14,7 +14,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.net.HttpURLConnection
 import java.time.LocalDateTime
-import java.util.UUID
 
 internal class ArticleRssAdapterTest {
     private lateinit var rssService: RssService
@@ -39,12 +38,12 @@ internal class ArticleRssAdapterTest {
     @Test
     fun `returns the articles from the RSS feed`() {
         // Given
-        val articlesRssAdapter =
-            ArticleRssAdapter(rssService)
+        val aSource = SourceTestBuilder().withUrl(mockWebServer.url("/feed.xml").toString()).build()
+        val articlesRssAdapter = ArticleRssAdapter(rssService)
         mockWebServer.enqueue(aValidRssFeed())
 
         // When
-        val articles = articlesRssAdapter.ofSource(aSource())
+        val articles = articlesRssAdapter.ofSource(aSource)
 
         // Then
         assertThat(articles).usingRecursiveComparison()
@@ -66,10 +65,5 @@ internal class ArticleRssAdapterTest {
             "http://www.feedforall.com/schools.htm",
             LocalDateTime.of(2004, 10, 19, 11, 9, 9)
         )
-    )
-
-    private fun aSource() = Source(
-        UUID.fromString("57133977-6266-4f62-9335-b9150bd453a2"),
-        mockWebServer.url("/feed.xml").toString()
     )
 }

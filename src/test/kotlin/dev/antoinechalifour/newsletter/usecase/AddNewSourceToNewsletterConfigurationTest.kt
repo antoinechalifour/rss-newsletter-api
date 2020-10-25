@@ -4,13 +4,13 @@ import com.nhaarman.mockitokotlin2.check
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder
+import dev.antoinechalifour.newsletter.SourceTestBuilder
 import dev.antoinechalifour.newsletter.asserts.NewsletterConfigurationAssert.Companion.assertThat
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
-import dev.antoinechalifour.newsletter.domain.Source
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.UUID
 
 internal class AddNewSourceToNewsletterConfigurationTest {
     private lateinit var newsletterConfigurationPort: NewsletterConfigurationPort
@@ -19,7 +19,10 @@ internal class AddNewSourceToNewsletterConfigurationTest {
     @BeforeEach
     fun setup() {
         newsletterConfigurationPort = mock()
-        newsletterConfiguration = aNewsletterConfiguration()
+
+        newsletterConfiguration = NewsletterConfigurationTestBuilder()
+            .withSources(SourceTestBuilder().withUrl("http://existing.source.com/feed.xml"))
+            .build()
     }
 
     @Test
@@ -39,8 +42,4 @@ internal class AddNewSourceToNewsletterConfigurationTest {
             check { assertThat(it).hasSourceMatchingUrl(url) }
         )
     }
-
-    private fun aNewsletterConfiguration() = NewsletterConfiguration(UUID.randomUUID(), mutableListOf(aSource()))
-
-    private fun aSource() = Source(UUID.randomUUID(), "http://old.source.com/rss.xml")
 }

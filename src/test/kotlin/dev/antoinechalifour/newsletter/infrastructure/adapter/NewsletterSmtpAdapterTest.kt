@@ -3,10 +3,10 @@ package dev.antoinechalifour.newsletter.infrastructure.adapter
 import com.nhaarman.mockitokotlin2.check
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import dev.antoinechalifour.newsletter.NewsletterTestBuilder
+import dev.antoinechalifour.newsletter.RecipientTestBuilder
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.asserts.EmailAssert.Companion.assertThat
-import dev.antoinechalifour.newsletter.domain.Newsletter
-import dev.antoinechalifour.newsletter.domain.Recipient
 import dev.antoinechalifour.newsletter.infrastructure.http.mjml.MjmlService
 import dev.antoinechalifour.newsletter.string
 import okhttp3.mockwebserver.MockResponse
@@ -49,6 +49,8 @@ internal class NewsletterSmtpAdapterTest {
     @Test
     fun `send the email to the recipient`() {
         // Given
+        val theSender = RecipientTestBuilder().aSender().build()
+        val theRecipient = RecipientTestBuilder().build()
         val newsletterSmtpAdapter =
             NewsletterSmtpAdapter(
                 aTemplateEngine(),
@@ -58,7 +60,7 @@ internal class NewsletterSmtpAdapterTest {
         mockWebServer.enqueue(aMjmlResponse())
 
         // When
-        newsletterSmtpAdapter.send(aNewsletter())
+        newsletterSmtpAdapter.send(NewsletterTestBuilder().build())
 
         // Then
         mockWebServer.takeRequest().apply {
@@ -69,8 +71,8 @@ internal class NewsletterSmtpAdapterTest {
 
         verify(mailer).sendMail(
             check {
-                assertThat(it).hasBeenSentBy(theSender())
-                assertThat(it).hasOnlyRecipient(theRecipient())
+                assertThat(it).hasBeenSentBy(theSender)
+                assertThat(it).hasOnlyRecipient(theRecipient)
                 assertThat(it).hasSubject("Today's newsletter")
                 assertThat(it).hasContent("some mjml compiled html")
             }
@@ -92,10 +94,4 @@ internal class NewsletterSmtpAdapterTest {
     private fun aMjmlResponse() = MockResponse()
         .setResponseCode(HttpURLConnection.HTTP_OK)
         .setBody("/test-http/mjml-response.json".asTestResourceFileContent())
-
-    private fun aNewsletter() = Newsletter(theRecipient(), emptyList())
-
-    private fun theSender() = Recipient("Your newsletter", "newsletter.antoinechalifour@gmail.com")
-
-    private fun theRecipient() = Recipient("John Doe", "john.doe@email.com")
 }

@@ -3,6 +3,8 @@ package dev.antoinechalifour.newsletter.application
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder
+import dev.antoinechalifour.newsletter.SourceTestBuilder
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.basicAuth
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
@@ -16,20 +18,25 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.post
-import java.util.UUID
 
 @SpringBootTest
 @AutoConfigureMockMvc
 internal class SourceControllerPostTest : ApiIntegrationTest() {
+
     private lateinit var newsletterConfiguration: NewsletterConfiguration
-    private val newSourceUrl = "http://tech.com/rss.xml"
+    private lateinit var newSource: Source
 
     @MockBean
     private lateinit var addNewSourceToNewsletterConfiguration: AddNewSourceToNewsletterConfiguration
 
     @BeforeEach
     fun setup() {
-        newsletterConfiguration = aNewsletterConfiguration()
+        newSource = SourceTestBuilder()
+            .withUrl("http://tech.com/rss.xml")
+            .build()
+        newsletterConfiguration = NewsletterConfigurationTestBuilder()
+            .withSources(newSource)
+            .build()
     }
 
     @Test
@@ -40,8 +47,9 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
     @Test
     fun `returns the updated newsletter configuration containing the new source`() {
         // Given
-        whenever(addNewSourceToNewsletterConfiguration.invoke(newsletterConfiguration.id.toString(), newSourceUrl))
-            .thenReturn(newsletterConfiguration)
+        whenever(
+            addNewSourceToNewsletterConfiguration.invoke(newsletterConfiguration.id.toString(), newSource.url)
+        ).thenReturn(newsletterConfiguration)
 
         // When
         mockMvc.post("/api/v1/newsletter-configuration/${newsletterConfiguration.id}/sources") {
@@ -49,8 +57,6 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
             contentType = MediaType.APPLICATION_JSON
             content = "/test-http/create-source.json".asTestResourceFileContent()
         }.andExpect {
-            val newSource = newsletterConfiguration.sources[0]
-
             status { isCreated }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id", equalTo(newsletterConfiguration.id.toString()))
@@ -59,7 +65,7 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
         }
 
         // Then
-        verify(addNewSourceToNewsletterConfiguration).invoke(newsletterConfiguration.id.toString(), newSourceUrl)
+        verify(addNewSourceToNewsletterConfiguration).invoke(newsletterConfiguration.id.toString(), newSource.url)
     }
 
     @Test
@@ -76,10 +82,4 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
             status { isNotFound }
         }
     }
-
-    private fun aNewsletterConfiguration() = NewsletterConfiguration(
-        UUID.randomUUID(), mutableListOf(theSourceWithUrl(newSourceUrl))
-    )
-
-    private fun theSourceWithUrl(url: String) = Source(UUID.randomUUID(), url)
 }
