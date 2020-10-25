@@ -68,7 +68,6 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
         whenever(addNewSourceToNewsletterConfiguration.invoke(any(), any())).thenThrow(NoSuchElementException())
 
         // When
-        // When
         mockMvc.post("/api/v1/newsletter-configuration/not-a-valid-id/sources") {
             basicAuth("admin", "passwd")
             contentType = MediaType.APPLICATION_JSON

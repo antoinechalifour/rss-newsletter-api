@@ -4,10 +4,10 @@ import com.nhaarman.mockitokotlin2.check
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import dev.antoinechalifour.newsletter.asserts.NewsletterConfigurationAssert.Companion.assertThat
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
 import dev.antoinechalifour.newsletter.domain.Source
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -36,11 +36,7 @@ internal class AddNewSourceToNewsletterConfigurationTest {
 
         // Then
         verify(newsletterConfigurationPort).save(
-            check {
-                // TODO: refactor, using a custom assertion ?
-                assertThat(it.sources).hasSize(2)
-                assertThat(it.sources[1]).hasFieldOrPropertyWithValue("url", url)
-            }
+            check { assertThat(it).hasSourceMatchingUrl(url) }
         )
     }
 

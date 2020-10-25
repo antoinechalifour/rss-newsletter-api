@@ -1,7 +1,6 @@
 package dev.antoinechalifour.newsletter.acceptance
 
 import dev.antoinechalifour.newsletter.basicAuth
-import dev.antoinechalifour.newsletter.infrastructure.database.NewsletterConfigurationRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,17 +12,14 @@ import org.springframework.test.web.servlet.post
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class CreateNewsletterConfigurationAcceptanceTest {
+class CreateNewsletterConfigurationAcceptanceTest : AcceptanceTest() {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    @Autowired
-    private lateinit var newsletterConfigurationRepository: NewsletterConfigurationRepository
-
     @BeforeEach
     fun setup() {
-        newsletterConfigurationRepository.deleteAll()
+        cleanupDatabase()
     }
 
     @Test

@@ -1,10 +1,10 @@
 package dev.antoinechalifour.newsletter.acceptance
 
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
+import dev.antoinechalifour.newsletter.asserts.NewsletterConfigurationAssert.Companion.assertThat
 import dev.antoinechalifour.newsletter.basicAuth
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +17,7 @@ import java.util.UUID
 
 @SpringBootTest
 @AutoConfigureMockMvc
-internal class AddNewSourceToNewsletterConfigurationAcceptanceTest {
+internal class AddNewSourceToNewsletterConfigurationAcceptanceTest : AcceptanceTest() {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -29,9 +29,12 @@ internal class AddNewSourceToNewsletterConfigurationAcceptanceTest {
 
     @BeforeEach
     fun setup() {
+        cleanupDatabase()
+
         newsletterConfigurationId = UUID.randomUUID()
-        val newsletterConfiguration = NewsletterConfiguration(newsletterConfigurationId)
-        newsletterConfigurationPort.save(newsletterConfiguration)
+        NewsletterConfiguration(newsletterConfigurationId).run {
+            newsletterConfigurationPort.save(this)
+        }
     }
 
     @Test
@@ -44,9 +47,7 @@ internal class AddNewSourceToNewsletterConfigurationAcceptanceTest {
         }
 
         // Then
-        val newsletterConfiguration = newsletterConfigurationPort.ofId(newsletterConfigurationId)
-
-        assertThat(newsletterConfiguration.sources).hasSize(1) // TODO: custom assertions ?
-        assertThat(newsletterConfiguration.sources[0]).hasFieldOrPropertyWithValue("url", "http://tech.com/rss.xml")
+        newsletterConfigurationPort.ofId(newsletterConfigurationId)
+            .let { assertThat(it).hasSourceMatchingUrl("http://tech.com/rss.xml") }
     }
 }
