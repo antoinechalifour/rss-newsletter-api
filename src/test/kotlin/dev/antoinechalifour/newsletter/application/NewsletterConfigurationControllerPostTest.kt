@@ -17,13 +17,15 @@ import java.util.UUID
 
 @SpringBootTest
 @AutoConfigureMockMvc
-internal class NewsletterConfigurationControllerPostTest {
-
-    @Autowired
-    private lateinit var mockMvc: MockMvc
+internal class NewsletterConfigurationControllerPostTest :ApiIntegrationTest() {
 
     @MockBean
     private lateinit var createNewsletterConfiguration: CreateNewsletterConfiguration
+
+    @Test
+    fun `should not be accessible without authentication`() {
+        checkAuthentication { post("/api/v1/newsletter-configuration") }
+    }
 
     @Test
     fun `returns a newly created newsletter configuration`() {
@@ -41,5 +43,4 @@ internal class NewsletterConfigurationControllerPostTest {
             }
     }
 
-    // TODO: add tests for 401
 }

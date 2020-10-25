@@ -21,19 +21,21 @@ import java.util.UUID
 
 @SpringBootTest
 @AutoConfigureMockMvc
-internal class SourceControllerPostTest {
+internal class SourceControllerPostTest : ApiIntegrationTest() {
     private lateinit var newsletterConfiguration: NewsletterConfiguration
     private val newSourceUrl = "http://tech.com/rss.xml"
 
     @MockBean
     private lateinit var addNewSourceToNewsletterConfiguration: AddNewSourceToNewsletterConfiguration
 
-    @Autowired
-    private lateinit var mockMvc: MockMvc
-
     @BeforeEach
     fun setup() {
         newsletterConfiguration = aNewsletterConfiguration()
+    }
+
+    @Test
+    fun `should not be accessible without authentication`() {
+        checkAuthentication { post("/api/v1/newsletter-configuration/${newsletterConfiguration.id}/sources") }
     }
 
     @Test
@@ -61,7 +63,7 @@ internal class SourceControllerPostTest {
         verify(addNewSourceToNewsletterConfiguration).invoke(newsletterConfiguration.id.toString(), newSourceUrl)
     }
 
-    // TODO: add tests for 404 and 401
+    // TODO: add tests for 404
 
     private fun aNewsletterConfiguration() = NewsletterConfiguration(
         UUID.randomUUID(), mutableListOf(theSourceWithUrl(newSourceUrl))
