@@ -37,7 +37,7 @@ internal class AddNewSourceToNewsletterConfigurationAcceptanceTest {
     @Test
     fun `adds a new source to the existing newsletter configuration`() {
         // When
-        mockMvc.post("/api/v1/newsletter-configuration/${newsletterConfigurationId}/sources") {
+        mockMvc.post("/api/v1/newsletter-configuration/$newsletterConfigurationId/sources") {
             basicAuth("admin", "passwd")
             contentType = MediaType.APPLICATION_JSON
             content = "/test-http/create-source.json".asTestResourceFileContent()

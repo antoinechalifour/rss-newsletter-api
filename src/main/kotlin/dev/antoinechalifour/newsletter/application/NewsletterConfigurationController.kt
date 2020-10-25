@@ -16,5 +16,4 @@ class NewsletterConfigurationController(val createNewsletterConfiguration: Creat
         ResponseEntity.status(201)
             .body(NewsletterConfigurationResponse.of(this))
     }
-
 }

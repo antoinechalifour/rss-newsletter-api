@@ -25,5 +25,4 @@ class SourceController(val addNewSourceToNewsletterConfiguration: AddNewSourceTo
         }
 
     data class AddNewSourceBody(@JsonProperty("url") val url: String)
-
 }
