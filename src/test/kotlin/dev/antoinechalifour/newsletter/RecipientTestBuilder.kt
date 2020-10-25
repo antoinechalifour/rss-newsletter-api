@@ -7,4 +7,9 @@ class RecipientTestBuilder {
     var email = "john.doe@email.com"
 
     fun build() = Recipient(name, email)
+
+    fun aSender() = apply {
+        name = "Your newsletter"
+        email = "newsletter.antoinechalifour@gmail.com"
+    }
 }
