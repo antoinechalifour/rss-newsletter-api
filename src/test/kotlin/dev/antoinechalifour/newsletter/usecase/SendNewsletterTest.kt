@@ -10,10 +10,10 @@ import dev.antoinechalifour.newsletter.ArticleTestBuilder
 import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder
 import dev.antoinechalifour.newsletter.RecipientTestBuilder
 import dev.antoinechalifour.newsletter.SourceTestBuilder
+import dev.antoinechalifour.newsletter.asserts.NewsletterAssert.Companion.assertThat
 import dev.antoinechalifour.newsletter.domain.ArticlePort
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
 import dev.antoinechalifour.newsletter.domain.NewsletterPort
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Clock
@@ -36,7 +36,7 @@ internal class SendNewsletterTest {
     @Test
     fun `sends the newsletter with articles from multiple sources`() {
         // Given
-        val aRecipient = RecipientTestBuilder().build()
+        val theRecipient = RecipientTestBuilder().build()
         val aTechSource = SourceTestBuilder().withUrl("https://blog.octo.com/feed/").build()
         val aNewsSource = SourceTestBuilder().withUrl("https://www.lemonde.fr/rss/une.xml").build()
         val aTechArticle = ArticleTestBuilder(clock).withUrl("https://blog.octo.com/article-1").build()
@@ -46,7 +46,7 @@ internal class SendNewsletterTest {
             .build()
 
         val sendNewsletter = SendNewsletter(
-            aRecipient, clock, newsletterConfigurationPort, articlePort, newsletterPort
+            theRecipient, clock, newsletterConfigurationPort, articlePort, newsletterPort
         )
 
         whenever(newsletterConfigurationPort.ofId(theNewsletterConfiguration.id)).thenReturn(theNewsletterConfiguration)
@@ -59,8 +59,8 @@ internal class SendNewsletterTest {
         // Then
         verify(newsletterPort).send(
             check {
-                assertThat(it.recipient).isEqualTo(aRecipient)
-                assertThat(it.articles).isEqualTo(listOf(aTechArticle, aNewsArticles))
+                assertThat(it).isSentTo(theRecipient)
+                assertThat(it).hasOnlyTheArticles(aTechArticle, aNewsArticles)
             }
         )
     }
@@ -91,9 +91,7 @@ internal class SendNewsletterTest {
 
         // Then
         verify(newsletterPort).send(
-            check {
-                assertThat(it.articles).isEqualTo(listOf(anArticleFromToday))
-            }
+            check { assertThat(it).hasOnlyTheArticles(anArticleFromToday) }
         )
     }
 

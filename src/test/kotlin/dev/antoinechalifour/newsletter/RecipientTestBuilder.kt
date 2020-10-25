@@ -7,5 +7,4 @@ class RecipientTestBuilder {
     var email = "john.doe@email.com"
 
     fun build() = Recipient(name, email)
-
 }
