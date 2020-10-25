@@ -21,9 +21,18 @@ open class SourceDatabase {
     fun toSource() = Source(checkNotNull(id), checkNotNull(url))
 
     companion object {
-        fun of(source: Source) = SourceDatabase().apply {
+        fun of(
+            source: Source,
+            newsletterConfigurationDatabase: NewsletterConfigurationDatabase
+        ) = SourceDatabase().apply {
             id = source.id
             url = source.url
+            newsletterConfiguration = newsletterConfigurationDatabase
         }
+
+        fun ofAll(
+            sources: MutableList<Source>,
+            newsletterConfigurationDatabase: NewsletterConfigurationDatabase
+        ) = sources.map { of(it, newsletterConfigurationDatabase) }
     }
 }

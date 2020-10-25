@@ -11,11 +11,13 @@ import java.util.UUID
 class NewsletterConfigurationDatabaseAdapter(val newsletterConfigurationRepository: NewsletterConfigurationRepository) :
     NewsletterConfigurationPort {
 
-    override fun ofId(id: UUID): NewsletterConfiguration = newsletterConfigurationRepository.findById(id)
+    override fun ofId(id: UUID): NewsletterConfiguration = newsletterConfigurationRepository
+        .findById(id)
         .map { it.toNewsletterConfiguration() }
         .orElseThrow { NoSuchElementException("Newsletter configuration $id was not found") }
 
-    override fun all(): List<NewsletterConfiguration> = newsletterConfigurationRepository.findAll()
+    override fun all(): List<NewsletterConfiguration> = newsletterConfigurationRepository
+        .findAll()
         .map { it.toNewsletterConfiguration() }
 
     override fun save(newsletterConfiguration: NewsletterConfiguration) {

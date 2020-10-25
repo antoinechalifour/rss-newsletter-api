@@ -28,20 +28,12 @@ open class NewsletterConfigurationDatabase(
     )
 
     companion object {
-        fun of(newsletterConfiguration: NewsletterConfiguration): NewsletterConfigurationDatabase {
-            val newsletterConfigurationDatabase = NewsletterConfigurationDatabase(
+        fun of(newsletterConfiguration: NewsletterConfiguration): NewsletterConfigurationDatabase =
+            NewsletterConfigurationDatabase(
                 newsletterConfiguration.id,
                 mutableListOf()
-            )
-
-            newsletterConfiguration.sources.forEach {
-                val sourceDatabase = SourceDatabase.of(it)
-                sourceDatabase.newsletterConfiguration = newsletterConfigurationDatabase
-
-                newsletterConfigurationDatabase.sources.add(sourceDatabase)
+            ).apply {
+                sources.addAll(SourceDatabase.ofAll(newsletterConfiguration.sources, this))
             }
-
-            return newsletterConfigurationDatabase
-        }
     }
 }
