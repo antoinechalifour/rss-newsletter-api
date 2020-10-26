@@ -2,7 +2,6 @@ package dev.antoinechalifour.newsletter.infrastructure.adapter
 
 import dev.antoinechalifour.newsletter.ArticleTestBuilder.Companion.anArticle
 import dev.antoinechalifour.newsletter.NewsletterTestBuilder.Companion.aNewsletter
-import dev.antoinechalifour.newsletter.infrastructure.database.NewsletterRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -36,7 +35,9 @@ internal class NewsletterDatabaseAdapterTest : DatabaseAdapterTest() {
         newsletterDatabaseAdapter.save(newsletter)
 
         // Then
-        assertThat(newsletterDatabaseAdapter.all()).hasSize(1)
+        assertThat(newsletterDatabaseAdapter.ofId(newsletter.id))
+            .usingRecursiveComparison()
+            .isEqualTo(newsletter)
     }
 
     private fun now() = Instant.parse("2020-10-19T17:30:00.00Z")

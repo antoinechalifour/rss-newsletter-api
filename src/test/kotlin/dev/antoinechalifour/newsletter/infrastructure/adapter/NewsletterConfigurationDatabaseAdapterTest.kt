@@ -3,7 +3,6 @@ package dev.antoinechalifour.newsletter.infrastructure.adapter
 import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder.Companion.aNewsletterConfiguration
 import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
-import dev.antoinechalifour.newsletter.infrastructure.database.NewsletterConfigurationRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
