@@ -5,6 +5,11 @@ import java.time.Clock
 import java.time.LocalDateTime
 
 class ArticleTestBuilder(clock: Clock) {
+
+    companion object {
+        fun anArticle(clock: Clock) = ArticleTestBuilder(clock)
+    }
+
     val today = LocalDateTime.now(clock)
     var title = "article title"
     var url = "http://article.com"

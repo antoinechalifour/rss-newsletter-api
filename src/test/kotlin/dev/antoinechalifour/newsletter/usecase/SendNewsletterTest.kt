@@ -6,10 +6,10 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import dev.antoinechalifour.newsletter.ArticleTestBuilder
-import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder
-import dev.antoinechalifour.newsletter.RecipientTestBuilder
-import dev.antoinechalifour.newsletter.SourceTestBuilder
+import dev.antoinechalifour.newsletter.ArticleTestBuilder.Companion.anArticle
+import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder.Companion.aNewsletterConfiguration
+import dev.antoinechalifour.newsletter.RecipientTestBuilder.Companion.aRecipient
+import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
 import dev.antoinechalifour.newsletter.asserts.NewsletterAssert.Companion.assertThat
 import dev.antoinechalifour.newsletter.domain.ArticlePort
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
@@ -36,12 +36,12 @@ internal class SendNewsletterTest {
     @Test
     fun `sends the newsletter with articles from multiple sources`() {
         // Given
-        val theRecipient = RecipientTestBuilder().build()
-        val aTechSource = SourceTestBuilder().withUrl("https://blog.octo.com/feed/").build()
-        val aNewsSource = SourceTestBuilder().withUrl("https://www.lemonde.fr/rss/une.xml").build()
-        val aTechArticle = ArticleTestBuilder(clock).withUrl("https://blog.octo.com/article-1").build()
-        val aNewsArticles = ArticleTestBuilder(clock).withUrl("https://www.lemonde.fr/article-2").build()
-        val theNewsletterConfiguration = NewsletterConfigurationTestBuilder()
+        val theRecipient = aRecipient().build()
+        val aTechSource = aSource().withUrl("https://blog.octo.com/feed/").build()
+        val aNewsSource = aSource().withUrl("https://www.lemonde.fr/rss/une.xml").build()
+        val aTechArticle = anArticle(clock).withUrl("https://blog.octo.com/article-1").build()
+        val aNewsArticles = anArticle(clock).withUrl("https://www.lemonde.fr/article-2").build()
+        val theNewsletterConfiguration = aNewsletterConfiguration()
             .withSources(aTechSource, aNewsSource)
             .build()
 
@@ -68,15 +68,15 @@ internal class SendNewsletterTest {
     @Test
     fun `sends only articles published from yesterday after 12 30pm`() {
         // Given
-        val aSource = SourceTestBuilder().build()
-        val anArticleFromToday = ArticleTestBuilder(clock).build()
-        val anArticleFromYesterday = ArticleTestBuilder(clock).fromYesterdayBefore1230().build()
-        val theNewsletterConfiguration = NewsletterConfigurationTestBuilder()
+        val aSource = aSource().build()
+        val anArticleFromToday = anArticle(clock).build()
+        val anArticleFromYesterday = anArticle(clock).fromYesterdayBefore1230().build()
+        val theNewsletterConfiguration = aNewsletterConfiguration()
             .withSources(aSource)
             .build()
 
         val sendNewsletter = SendNewsletter(
-            RecipientTestBuilder().build(),
+            aRecipient().build(),
             clock,
             newsletterConfigurationPort,
             articlePort,
@@ -98,13 +98,13 @@ internal class SendNewsletterTest {
     @Test
     fun `does not send the newsletter when no articles have been published`() {
         // Given
-        val aSource = SourceTestBuilder().build()
-        val theNewsletterConfiguration = NewsletterConfigurationTestBuilder()
+        val aSource = aSource().build()
+        val theNewsletterConfiguration = aNewsletterConfiguration()
             .withSources(aSource)
             .build()
 
         val sendNewsletter = SendNewsletter(
-            RecipientTestBuilder().build(),
+            aRecipient().build(),
             clock,
             newsletterConfigurationPort,
             articlePort,

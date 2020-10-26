@@ -3,8 +3,8 @@ package dev.antoinechalifour.newsletter.application
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder
-import dev.antoinechalifour.newsletter.SourceTestBuilder
+import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder.Companion.aNewsletterConfiguration
+import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.basicAuth
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
@@ -31,12 +31,8 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
 
     @BeforeEach
     fun setup() {
-        newSource = SourceTestBuilder()
-            .withUrl("http://tech.com/rss.xml")
-            .build()
-        newsletterConfiguration = NewsletterConfigurationTestBuilder()
-            .withSources(newSource)
-            .build()
+        newSource = aSource().withUrl("http://tech.com/rss.xml").build()
+        newsletterConfiguration = aNewsletterConfiguration().withSources(newSource).build()
     }
 
     @Test

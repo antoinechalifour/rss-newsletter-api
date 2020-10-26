@@ -1,6 +1,6 @@
 package dev.antoinechalifour.newsletter.infrastructure.adapter
 
-import dev.antoinechalifour.newsletter.SourceTestBuilder
+import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.domain.Article
 import dev.antoinechalifour.newsletter.infrastructure.http.rss.RssService
@@ -38,7 +38,7 @@ internal class ArticleRssAdapterTest {
     @Test
     fun `returns the articles from the RSS feed`() {
         // Given
-        val aSource = SourceTestBuilder().withUrl(mockWebServer.url("/feed.xml").toString()).build()
+        val aSource = aSource().withUrl(mockWebServer.url("/feed.xml").toString()).build()
         val articlesRssAdapter = ArticleRssAdapter(rssService)
         mockWebServer.enqueue(aValidRssFeed())
 

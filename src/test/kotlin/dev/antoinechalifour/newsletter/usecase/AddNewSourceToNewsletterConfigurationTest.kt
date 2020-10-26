@@ -4,8 +4,8 @@ import com.nhaarman.mockitokotlin2.check
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder
-import dev.antoinechalifour.newsletter.SourceTestBuilder
+import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder.Companion.aNewsletterConfiguration
+import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
 import dev.antoinechalifour.newsletter.asserts.NewsletterConfigurationAssert.Companion.assertThat
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
@@ -20,9 +20,8 @@ internal class AddNewSourceToNewsletterConfigurationTest {
     fun setup() {
         newsletterConfigurationPort = mock()
 
-        newsletterConfiguration = NewsletterConfigurationTestBuilder()
-            .withSources(SourceTestBuilder().withUrl("http://existing.source.com/feed.xml"))
-            .build()
+        val source = aSource().withUrl("http://existing.source.com/feed.xml")
+        newsletterConfiguration = aNewsletterConfiguration().withSources(source).build()
     }
 
     @Test

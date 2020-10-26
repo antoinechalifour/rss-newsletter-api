@@ -4,6 +4,11 @@ import dev.antoinechalifour.newsletter.domain.Source
 import java.util.UUID
 
 class SourceTestBuilder {
+
+    companion object {
+        fun aSource() = SourceTestBuilder()
+    }
+
     var id = UUID.randomUUID()
     var url = "http://source.com/rss.xml"
 

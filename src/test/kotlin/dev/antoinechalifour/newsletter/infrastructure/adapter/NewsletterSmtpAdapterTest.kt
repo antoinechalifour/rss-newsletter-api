@@ -3,8 +3,9 @@ package dev.antoinechalifour.newsletter.infrastructure.adapter
 import com.nhaarman.mockitokotlin2.check
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import dev.antoinechalifour.newsletter.NewsletterTestBuilder
-import dev.antoinechalifour.newsletter.RecipientTestBuilder
+import dev.antoinechalifour.newsletter.NewsletterTestBuilder.Companion.aNewsletter
+import dev.antoinechalifour.newsletter.RecipientTestBuilder.Companion.aRecipient
+import dev.antoinechalifour.newsletter.RecipientTestBuilder.Companion.aSender
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.asserts.EmailAssert.Companion.assertThat
 import dev.antoinechalifour.newsletter.infrastructure.http.mjml.MjmlService
@@ -49,8 +50,8 @@ internal class NewsletterSmtpAdapterTest {
     @Test
     fun `send the email to the recipient`() {
         // Given
-        val theSender = RecipientTestBuilder().aSender().build()
-        val theRecipient = RecipientTestBuilder().build()
+        val theSender = aSender().build()
+        val theRecipient = aRecipient().build()
         val newsletterSmtpAdapter =
             NewsletterSmtpAdapter(
                 aTemplateEngine(),
@@ -60,7 +61,7 @@ internal class NewsletterSmtpAdapterTest {
         mockWebServer.enqueue(aMjmlResponse())
 
         // When
-        newsletterSmtpAdapter.send(NewsletterTestBuilder().build())
+        newsletterSmtpAdapter.send(aNewsletter().build())
 
         // Then
         mockWebServer.takeRequest().apply {
