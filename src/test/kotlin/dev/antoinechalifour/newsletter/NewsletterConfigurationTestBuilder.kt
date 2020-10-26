@@ -6,6 +6,10 @@ import java.util.UUID
 
 class NewsletterConfigurationTestBuilder {
 
+    companion object {
+        fun aNewsletterConfiguration() = NewsletterConfigurationTestBuilder()
+    }
+
     private var id = UUID.randomUUID()
     private var sources = mutableListOf<Source>()
 
