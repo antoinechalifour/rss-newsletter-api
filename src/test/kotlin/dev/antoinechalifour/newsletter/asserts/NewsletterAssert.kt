@@ -5,6 +5,7 @@ import dev.antoinechalifour.newsletter.domain.Newsletter
 import dev.antoinechalifour.newsletter.domain.Recipient
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.Assertions.assertThat
+import java.util.UUID
 
 class NewsletterAssert(actual: Newsletter) :
     AbstractAssert<NewsletterAssert, Newsletter>(actual, NewsletterAssert::class.java) {
@@ -26,4 +27,8 @@ class NewsletterAssert(actual: Newsletter) :
     }
 
     fun hasRecipient(theRecipient: Recipient) = isSentTo(theRecipient)
+
+    fun hasNewsletterConfigurationId(newsletterConfigurationId: UUID) {
+        assertThat(actual.newsletterConfigurationId).isEqualTo(newsletterConfigurationId)
+    }
 }

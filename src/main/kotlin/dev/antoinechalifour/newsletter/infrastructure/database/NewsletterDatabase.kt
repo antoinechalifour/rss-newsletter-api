@@ -27,6 +27,8 @@ open class NewsletterDatabase(
     @Id
     open var id: UUID? = null,
 
+    open var newsletterConfigurationId: UUID? = null,
+
     @Type(type = "jsonb")
     @Column(columnDefinition = "json")
     open var payload: String? = null
@@ -36,23 +38,27 @@ open class NewsletterDatabase(
 
         fun of(newsletter: Newsletter) = NewsletterDatabase(
             newsletter.id,
+            newsletter.newsletterConfigurationId,
             mapper.writeValueAsString(JsonNewsletter(newsletter))
         )
     }
 
     data class JsonNewsletter(
         val id: String,
+        val newsletterConfigurationId: String,
         val recipient: JsonRecipient,
         val articles: List<JsonArticle>,
     ) {
         constructor(newsletter: Newsletter) : this(
             newsletter.id.toString(),
+            newsletter.newsletterConfigurationId.toString(),
             JsonRecipient(newsletter.recipient),
             newsletter.articles.map { JsonArticle(it) }
         )
 
         fun toNewsletter() = Newsletter(
             UUID.fromString(id),
+            UUID.fromString(newsletterConfigurationId),
             recipient.toRecipient(),
             articles.map { it.toArticle() }
         )

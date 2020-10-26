@@ -13,6 +13,11 @@ databaseChangeLog:
                     nullable: false
                     primaryKey: true
               - column:
+                  name: newsletter_configuration_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
                   name: payload
                   type: json
                   constraints:

@@ -4,14 +4,21 @@ import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
 
-data class Newsletter(val id: UUID, val recipient: Recipient, val articles: List<Article>) {
+data class Newsletter(
+    val id: UUID,
+    val newsletterConfigurationId: UUID,
+    val recipient: Recipient,
+    val articles: List<Article>
+) {
     companion object {
         fun forToday(
             recipient: Recipient,
+            newsletterConfigurationId: UUID,
             articles: List<Article>,
             clock: Clock
         ) = Newsletter(
             UUID.randomUUID(),
+            newsletterConfigurationId,
             recipient,
             articles.filter { it.publishedAfter(yesterday(clock)) }
         )

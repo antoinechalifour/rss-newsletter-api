@@ -120,6 +120,7 @@ internal class SendNewsletterTest {
         // Then
         verify(newsletterPort).save(
             check {
+                assertThat(it).hasNewsletterConfigurationId(theNewsletterConfiguration.id)
                 assertThat(it).hasRecipient(theRecipient)
                 assertThat(it).hasOnlyTheArticles(aTechArticle)
             }

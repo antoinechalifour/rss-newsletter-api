@@ -20,10 +20,11 @@ class SendNewsletter(
     private val newsletterSender: NewsletterSender
 ) {
     operator fun invoke(newsletterConfigurationId: String) {
-        newsletterConfigurationPort.ofId(UUID.fromString(newsletterConfigurationId)).apply {
+        val newletterConfigurationId = UUID.fromString(newsletterConfigurationId)
+        newsletterConfigurationPort.ofId(newletterConfigurationId).apply {
             val articles = sources.map(articlePort::ofSource).flatten()
 
-            Newsletter.forToday(recipient, articles, clock).run {
+            Newsletter.forToday(recipient, newletterConfigurationId, articles, clock).run {
                 if (isWorthSending()) {
                     newsletterSender.send(this)
                     newsletterPort.save(this)
