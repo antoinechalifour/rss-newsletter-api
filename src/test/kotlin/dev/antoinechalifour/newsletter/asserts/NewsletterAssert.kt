@@ -24,4 +24,6 @@ class NewsletterAssert(actual: Newsletter) :
             .usingRecursiveComparison()
             .isEqualTo(theArticles.toList())
     }
+
+    fun hasRecipient(theRecipient: Recipient) = isSentTo(theRecipient)
 }

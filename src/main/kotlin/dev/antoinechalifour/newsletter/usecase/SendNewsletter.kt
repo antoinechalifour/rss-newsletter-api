@@ -3,6 +3,7 @@ package dev.antoinechalifour.newsletter.usecase
 import dev.antoinechalifour.newsletter.domain.ArticlePort
 import dev.antoinechalifour.newsletter.domain.Newsletter
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
+import dev.antoinechalifour.newsletter.domain.NewsletterPort
 import dev.antoinechalifour.newsletter.domain.NewsletterSender
 import dev.antoinechalifour.newsletter.domain.Recipient
 import org.springframework.stereotype.Component
@@ -13,6 +14,7 @@ import java.util.UUID
 class SendNewsletter(
     private val recipient: Recipient,
     private val clock: Clock,
+    private val newsletterPort: NewsletterPort,
     private val newsletterConfigurationPort: NewsletterConfigurationPort,
     private val articlePort: ArticlePort,
     private val newsletterSender: NewsletterSender
@@ -22,7 +24,10 @@ class SendNewsletter(
             val articles = sources.map(articlePort::ofSource).flatten()
 
             Newsletter.forToday(recipient, articles, clock).run {
-                if (isWorthSending()) newsletterSender.send(this)
+                if (isWorthSending()) {
+                    newsletterSender.send(this)
+                    newsletterPort.save(this)
+                }
             }
         }
     }
