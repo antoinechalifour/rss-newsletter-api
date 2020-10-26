@@ -13,7 +13,7 @@ import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
 import dev.antoinechalifour.newsletter.asserts.NewsletterAssert.Companion.assertThat
 import dev.antoinechalifour.newsletter.domain.ArticlePort
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
-import dev.antoinechalifour.newsletter.domain.NewsletterPort
+import dev.antoinechalifour.newsletter.domain.NewsletterSender
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Clock
@@ -22,14 +22,14 @@ import java.time.ZoneId
 
 internal class SendNewsletterTest {
     private lateinit var newsletterConfigurationPort: NewsletterConfigurationPort
-    private lateinit var newsletterPort: NewsletterPort
+    private lateinit var newsletterSender: NewsletterSender
     private lateinit var articlePort: ArticlePort
     private val clock = Clock.fixed(now(), ZoneId.of("Europe/Paris"))
 
     @BeforeEach
     fun setup() {
         newsletterConfigurationPort = mock()
-        newsletterPort = mock()
+        newsletterSender = mock()
         articlePort = mock()
     }
 
@@ -46,7 +46,7 @@ internal class SendNewsletterTest {
             .build()
 
         val sendNewsletter = SendNewsletter(
-            theRecipient, clock, newsletterConfigurationPort, articlePort, newsletterPort
+            theRecipient, clock, newsletterConfigurationPort, articlePort, newsletterSender
         )
 
         whenever(newsletterConfigurationPort.ofId(theNewsletterConfiguration.id)).thenReturn(theNewsletterConfiguration)
@@ -57,7 +57,7 @@ internal class SendNewsletterTest {
         sendNewsletter(theNewsletterConfiguration.id.toString())
 
         // Then
-        verify(newsletterPort).send(
+        verify(newsletterSender).send(
             check {
                 assertThat(it).isSentTo(theRecipient)
                 assertThat(it).hasOnlyTheArticles(aTechArticle, aNewsArticles)
@@ -80,7 +80,7 @@ internal class SendNewsletterTest {
             clock,
             newsletterConfigurationPort,
             articlePort,
-            newsletterPort
+            newsletterSender
         )
 
         whenever(newsletterConfigurationPort.ofId(theNewsletterConfiguration.id)).thenReturn(theNewsletterConfiguration)
@@ -90,7 +90,7 @@ internal class SendNewsletterTest {
         sendNewsletter(theNewsletterConfiguration.id.toString())
 
         // Then
-        verify(newsletterPort).send(
+        verify(newsletterSender).send(
             check { assertThat(it).hasOnlyTheArticles(anArticleFromToday) }
         )
     }
@@ -108,7 +108,7 @@ internal class SendNewsletterTest {
             clock,
             newsletterConfigurationPort,
             articlePort,
-            newsletterPort
+            newsletterSender
         )
 
         whenever(newsletterConfigurationPort.ofId(theNewsletterConfiguration.id)).thenReturn(theNewsletterConfiguration)
@@ -118,7 +118,7 @@ internal class SendNewsletterTest {
         sendNewsletter(theNewsletterConfiguration.id.toString())
 
         // Then
-        verify(newsletterPort, never()).send(any())
+        verify(newsletterSender, never()).send(any())
     }
 
     private fun now() = Instant.parse("2020-10-19T17:30:00.00Z")

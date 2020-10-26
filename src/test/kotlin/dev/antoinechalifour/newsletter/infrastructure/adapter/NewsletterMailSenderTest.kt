@@ -25,7 +25,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.HttpURLConnection
 
-internal class NewsletterSmtpAdapterTest {
+internal class NewsletterMailSenderTest {
     private lateinit var mjmlService: MjmlService
     private lateinit var mailer: Mailer
     private var mockWebServer = MockWebServer()
@@ -53,7 +53,7 @@ internal class NewsletterSmtpAdapterTest {
         val theSender = aSender().build()
         val theRecipient = aRecipient().build()
         val newsletterSmtpAdapter =
-            NewsletterSmtpAdapter(
+            NewsletterMailSender(
                 aTemplateEngine(),
                 mailer,
                 mjmlService

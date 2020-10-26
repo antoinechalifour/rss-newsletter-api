@@ -1,5 +1,5 @@
 package dev.antoinechalifour.newsletter.domain
 
-interface NewsletterPort {
+interface NewsletterSender {
     fun send(newsletter: Newsletter)
 }
