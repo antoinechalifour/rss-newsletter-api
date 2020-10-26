@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-newsletter
+      author: antoinechalifour
+      changes:
+        - createTable:
+            tableName: newsletter
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: payload
+                  type: json
+                  constraints:
+                    nullable: false

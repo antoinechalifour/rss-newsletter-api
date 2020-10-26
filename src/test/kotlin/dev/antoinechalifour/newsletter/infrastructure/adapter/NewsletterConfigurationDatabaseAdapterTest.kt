@@ -13,17 +13,14 @@ import org.springframework.boot.test.context.SpringBootTest
 import java.util.UUID
 
 @SpringBootTest
-internal class NewsletterConfigurationDatabaseAdapterTest {
-
-    @Autowired
-    private lateinit var newsletterConfigurationRepository: NewsletterConfigurationRepository
+internal class NewsletterConfigurationDatabaseAdapterTest : DatabaseAdapterTest() {
 
     @Autowired
     private lateinit var newsletterConfigurationDatabaseAdapter: NewsletterConfigurationDatabaseAdapter
 
     @BeforeEach
     fun setup() {
-        newsletterConfigurationRepository.deleteAll()
+        cleanDatabase()
     }
 
     @Test

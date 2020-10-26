@@ -13,5 +13,6 @@ class NewsletterTestBuilder {
     private var recipient = aRecipient().build()
     private var articles = emptyList<Article>()
 
+    fun withArticles(vararg theArticles: Article) = apply { articles = theArticles.toList() }
     fun build() = Newsletter(recipient, articles)
 }

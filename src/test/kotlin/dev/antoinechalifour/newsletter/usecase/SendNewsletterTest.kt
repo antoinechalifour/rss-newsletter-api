@@ -151,6 +151,5 @@ internal class SendNewsletterTest {
         verify(newsletterSender, never()).send(any())
     }
 
-
     private fun now() = Instant.parse("2020-10-19T17:30:00.00Z")
 }

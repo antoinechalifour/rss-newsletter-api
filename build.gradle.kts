@@ -40,6 +40,7 @@ dependencies {
 
     // Database
     implementation("org.liquibase:liquibase-core:4.1.1")
+    implementation("com.vladmihalcea:hibernate-types-52:2.10.0")
     runtimeOnly("org.postgresql:postgresql:42.2.18")
 
     // Tests
