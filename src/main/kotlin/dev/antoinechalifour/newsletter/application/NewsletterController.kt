@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.RestController
 class NewsletterController(val sendNewsletter: SendNewsletter) {
 
     @PostMapping("/newsletter")
-    fun post(@PathVariable newsletterConfigurationId: String): String =
-        sendNewsletter(newsletterConfigurationId).run { "Newsletter sent!" }
+    fun post(@PathVariable newsletterConfigurationId: String): NewsletterResponse =
+        sendNewsletter(newsletterConfigurationId).run { NewsletterResponse.of(this) }
 }

@@ -115,16 +115,14 @@ internal class SendNewsletterTest {
         whenever(articlePort.ofSource(aTechSource)).thenReturn(listOf(aTechArticle))
 
         // When
-        sendNewsletter(theNewsletterConfiguration.id.toString())
+        val newsletter = sendNewsletter(theNewsletterConfiguration.id.toString())
 
         // Then
-        verify(newsletterPort).save(
-            check {
-                assertThat(it).hasNewsletterConfigurationId(theNewsletterConfiguration.id)
-                assertThat(it).hasRecipient(theRecipient)
-                assertThat(it).hasOnlyTheArticles(aTechArticle)
-            }
-        )
+        assertThat(newsletter).hasNewsletterConfigurationId(theNewsletterConfiguration.id)
+        assertThat(newsletter).hasRecipient(theRecipient)
+        assertThat(newsletter).hasOnlyTheArticles(aTechArticle)
+
+        verify(newsletterPort).save(newsletter)
     }
 
     @Test

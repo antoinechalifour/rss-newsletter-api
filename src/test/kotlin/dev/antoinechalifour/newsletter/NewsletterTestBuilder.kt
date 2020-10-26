@@ -17,5 +17,8 @@ class NewsletterTestBuilder {
     private var articles = emptyList<Article>()
 
     fun withArticles(vararg theArticles: Article) = apply { articles = theArticles.toList() }
+    fun withNewsletterConfigurationId(theNewsletterConfigurationId: UUID) =
+        apply { newsletterConfigurationId = theNewsletterConfigurationId }
+
     fun build() = Newsletter(id, newsletterConfigurationId, recipient, articles)
 }
