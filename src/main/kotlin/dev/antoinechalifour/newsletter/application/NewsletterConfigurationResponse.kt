@@ -4,10 +4,10 @@ import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
 import java.util.UUID
 
 class NewsletterConfigurationResponse(
-    uuid: UUID,
+    id: UUID,
     val sources: List<SourceResponse>
 ) {
-    var id: String = uuid.toString()
+    val id: String = id.toString()
 
     companion object {
         fun of(newsletterConfiguration: NewsletterConfiguration) =
