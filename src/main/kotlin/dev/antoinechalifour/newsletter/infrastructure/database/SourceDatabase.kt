@@ -14,11 +14,12 @@ open class SourceDatabase {
     @Id
     open var id: UUID? = null
     open var url: String? = null
+    open var name: String? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     open var newsletterConfiguration: NewsletterConfigurationDatabase? = null
 
-    fun toSource() = Source(checkNotNull(id), checkNotNull(url))
+    fun toSource() = Source(checkNotNull(id), checkNotNull(url), checkNotNull(name))
 
     companion object {
         fun of(
@@ -27,6 +28,7 @@ open class SourceDatabase {
         ) = SourceDatabase().apply {
             id = source.id
             url = source.url
+            name = source.name
             newsletterConfiguration = newsletterConfigurationDatabase
         }
 

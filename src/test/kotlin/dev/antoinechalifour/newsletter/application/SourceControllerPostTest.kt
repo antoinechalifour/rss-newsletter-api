@@ -1,7 +1,6 @@
 package dev.antoinechalifour.newsletter.application
 
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder.Companion.aNewsletterConfiguration
 import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
@@ -31,7 +30,7 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
 
     @BeforeEach
     fun setup() {
-        newSource = aSource().withUrl("http://tech.com/rss.xml").build()
+        newSource = aSource().withName("Source name").withUrl("http://tech.com/rss.xml").build()
         newsletterConfiguration = aNewsletterConfiguration().withSources(newSource).build()
     }
 
@@ -44,7 +43,11 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
     fun `returns the updated newsletter configuration containing the new source`() {
         // Given
         whenever(
-            addNewSourceToNewsletterConfiguration.invoke(newsletterConfiguration.id.toString(), newSource.url)
+            addNewSourceToNewsletterConfiguration.invoke(
+                newsletterConfiguration.id.toString(),
+                newSource.url,
+                newSource.name
+            )
         ).thenReturn(newsletterConfiguration)
 
         // When
@@ -58,16 +61,14 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
             jsonPath("$.id", equalTo(newsletterConfiguration.id.toString()))
             jsonPath("$.sources[0].id", equalTo(newSource.id.toString()))
             jsonPath("$.sources[0].url", equalTo(newSource.url))
+            jsonPath("$.sources[0].name", equalTo(newSource.name))
         }
-
-        // Then
-        verify(addNewSourceToNewsletterConfiguration).invoke(newsletterConfiguration.id.toString(), newSource.url)
     }
 
     @Test
     fun `returns a 404 when the newsletter configuration is not found`() {
         // Given
-        whenever(addNewSourceToNewsletterConfiguration.invoke(any(), any())).thenThrow(NoSuchElementException())
+        whenever(addNewSourceToNewsletterConfiguration.invoke(any(), any(), any())).thenThrow(NoSuchElementException())
 
         // When
         mockMvc.post("/api/v1/newsletter-configuration/not-a-valid-id/sources") {

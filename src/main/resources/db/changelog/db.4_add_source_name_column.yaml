@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-source-name-column
+      author: antoinechalifour
+      changes:
+        - addColumn:
+            tableName: source
+            columns:
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false

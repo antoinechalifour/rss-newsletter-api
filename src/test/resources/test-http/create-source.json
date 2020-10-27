@@ -1,3 +1,4 @@
 {
-  "url": "http://tech.com/rss.xml"
+  "url": "http://tech.com/rss.xml",
+  "name": "Source name"
 }
