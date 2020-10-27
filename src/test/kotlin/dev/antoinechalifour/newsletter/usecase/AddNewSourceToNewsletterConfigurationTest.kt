@@ -32,13 +32,18 @@ internal class AddNewSourceToNewsletterConfigurationTest {
 
         val addNewSource = AddNewSourceToNewsletterConfiguration(newsletterConfigurationPort)
         val url = "http://source.com/rss.xml"
+        val name = "A new source name"
 
         // When
-        addNewSource(newsletterConfiguration.id.toString(), url)
+        addNewSource(newsletterConfiguration.id.toString(), url, name)
 
         // Then
         verify(newsletterConfigurationPort).save(
-            check { assertThat(it).hasSourceMatchingUrl(url) }
+            check {
+                assertThat(it)
+                    .hasSourceWithName(name)
+                    .hasSourceMatchingUrl(url)
+            }
         )
     }
 }
