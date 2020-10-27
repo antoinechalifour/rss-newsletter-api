@@ -1,7 +1,6 @@
 package dev.antoinechalifour.newsletter.application
 
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder.Companion.aNewsletterConfiguration
 import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
@@ -44,7 +43,11 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
     fun `returns the updated newsletter configuration containing the new source`() {
         // Given
         whenever(
-            addNewSourceToNewsletterConfiguration.invoke(newsletterConfiguration.id.toString(), newSource.url)
+            addNewSourceToNewsletterConfiguration.invoke(
+                newsletterConfiguration.id.toString(),
+                newSource.url,
+                newSource.name
+            )
         ).thenReturn(newsletterConfiguration)
 
         // When
@@ -60,9 +63,6 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
             jsonPath("$.sources[0].url", equalTo(newSource.url))
             jsonPath("$.sources[0].name", equalTo(newSource.name))
         }
-
-        // Then
-        verify(addNewSourceToNewsletterConfiguration).invoke(newsletterConfiguration.id.toString(), newSource.url)
     }
 
     @Test
