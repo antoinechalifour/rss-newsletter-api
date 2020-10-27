@@ -17,5 +17,6 @@ class ArticleTestBuilder(clock: Clock) {
 
     fun fromYesterdayBefore1230() = apply { pubDate = today.minusDays(1).withHour(12).withMinute(29) }
     fun withUrl(theUrl: String) = apply { url = theUrl }
+    fun withTitle(theTitle: String) = apply { title = theTitle }
     fun build() = Article(title, url, pubDate)
 }

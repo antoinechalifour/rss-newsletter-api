@@ -13,6 +13,7 @@ import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
 import dev.antoinechalifour.newsletter.asserts.NewsletterAssert.Companion.assertThat
 import dev.antoinechalifour.newsletter.domain.ArticlePort
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
+import dev.antoinechalifour.newsletter.domain.NewsletterPort
 import dev.antoinechalifour.newsletter.domain.NewsletterSender
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -21,6 +22,7 @@ import java.time.Instant
 import java.time.ZoneId
 
 internal class SendNewsletterTest {
+    private lateinit var newsletterPort: NewsletterPort
     private lateinit var newsletterConfigurationPort: NewsletterConfigurationPort
     private lateinit var newsletterSender: NewsletterSender
     private lateinit var articlePort: ArticlePort
@@ -28,6 +30,7 @@ internal class SendNewsletterTest {
 
     @BeforeEach
     fun setup() {
+        newsletterPort = mock()
         newsletterConfigurationPort = mock()
         newsletterSender = mock()
         articlePort = mock()
@@ -46,7 +49,7 @@ internal class SendNewsletterTest {
             .build()
 
         val sendNewsletter = SendNewsletter(
-            theRecipient, clock, newsletterConfigurationPort, articlePort, newsletterSender
+            theRecipient, clock, newsletterPort, newsletterConfigurationPort, articlePort, newsletterSender
         )
 
         whenever(newsletterConfigurationPort.ofId(theNewsletterConfiguration.id)).thenReturn(theNewsletterConfiguration)
@@ -78,6 +81,7 @@ internal class SendNewsletterTest {
         val sendNewsletter = SendNewsletter(
             aRecipient().build(),
             clock,
+            newsletterPort,
             newsletterConfigurationPort,
             articlePort,
             newsletterSender
@@ -96,6 +100,32 @@ internal class SendNewsletterTest {
     }
 
     @Test
+    fun `saves the newsletter if sent`() {
+        // Given
+        val theRecipient = aRecipient().build()
+        val aTechSource = aSource().withUrl("https://blog.octo.com/feed/").build()
+        val aTechArticle = anArticle(clock).withUrl("https://blog.octo.com/article-1").build()
+        val theNewsletterConfiguration = aNewsletterConfiguration().withSources(aTechSource).build()
+
+        val sendNewsletter = SendNewsletter(
+            theRecipient, clock, newsletterPort, newsletterConfigurationPort, articlePort, newsletterSender
+        )
+
+        whenever(newsletterConfigurationPort.ofId(theNewsletterConfiguration.id)).thenReturn(theNewsletterConfiguration)
+        whenever(articlePort.ofSource(aTechSource)).thenReturn(listOf(aTechArticle))
+
+        // When
+        val newsletter = sendNewsletter(theNewsletterConfiguration.id.toString())
+
+        // Then
+        assertThat(newsletter).hasNewsletterConfigurationId(theNewsletterConfiguration.id)
+        assertThat(newsletter).hasRecipient(theRecipient)
+        assertThat(newsletter).hasOnlyTheArticles(aTechArticle)
+
+        verify(newsletterPort).save(newsletter)
+    }
+
+    @Test
     fun `does not send the newsletter when no articles have been published`() {
         // Given
         val aSource = aSource().build()
@@ -106,6 +136,7 @@ internal class SendNewsletterTest {
         val sendNewsletter = SendNewsletter(
             aRecipient().build(),
             clock,
+            newsletterPort,
             newsletterConfigurationPort,
             articlePort,
             newsletterSender

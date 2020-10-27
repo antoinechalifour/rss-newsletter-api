@@ -24,6 +24,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
 
     // HTTP
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
@@ -40,6 +41,7 @@ dependencies {
 
     // Database
     implementation("org.liquibase:liquibase-core:4.1.1")
+    implementation("com.vladmihalcea:hibernate-types-52:2.10.0")
     runtimeOnly("org.postgresql:postgresql:42.2.18")
 
     // Tests
