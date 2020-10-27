@@ -33,7 +33,7 @@
       NEWSLETTER_AUTH_PASSWORD: "{{ auth_password }}"
       MJML_USER: "{{ mjml_user }}"
       MJML_PASSWORD: "{{ mjml_password }}"
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/newsletter
+      SPRING_DATASOURCE_URL: jdbc:postgresql://172.17.0.5:5432/newsletter
       SPRING_DATASOURCE_USERNAME: "{{ db_user }}"
       SPRING_DATASOURCE_PASSWORD: "{{ db_password }}"
       SPRING_JPA_HIBERNATE_DDL-AUTO: none
