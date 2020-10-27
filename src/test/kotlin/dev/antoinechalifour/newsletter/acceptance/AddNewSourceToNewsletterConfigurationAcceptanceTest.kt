@@ -48,6 +48,10 @@ internal class AddNewSourceToNewsletterConfigurationAcceptanceTest : AcceptanceT
 
         // Then
         newsletterConfigurationPort.ofId(newsletterConfigurationId)
-            .let { assertThat(it).hasSourceMatchingUrl("http://tech.com/rss.xml") }
+            .let {
+                assertThat(it)
+                    .hasSourceWithName("Source name")
+                    .hasSourceMatchingUrl("http://tech.com/rss.xml")
+            }
     }
 }

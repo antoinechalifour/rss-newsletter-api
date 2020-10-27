@@ -17,4 +17,9 @@ class NewsletterConfigurationAssert(actual: NewsletterConfiguration) :
         actual.sources.find { it.url == url }
             ?: failWithMessage("Expected newsletter configuration to have a source matching url <%s> but got none", url)
     }
+
+    fun hasSourceWithName(name: String) = apply {
+        actual.sources.find { it.name == name }
+            ?: failWithMessage("Expected newsletter configuration to have a source with name <%s> but got none", name)
+    }
 }
