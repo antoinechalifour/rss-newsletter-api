@@ -31,7 +31,7 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
 
     @BeforeEach
     fun setup() {
-        newSource = aSource().withUrl("http://tech.com/rss.xml").build()
+        newSource = aSource().withName("Source name").withUrl("http://tech.com/rss.xml").build()
         newsletterConfiguration = aNewsletterConfiguration().withSources(newSource).build()
     }
 
@@ -58,6 +58,7 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
             jsonPath("$.id", equalTo(newsletterConfiguration.id.toString()))
             jsonPath("$.sources[0].id", equalTo(newSource.id.toString()))
             jsonPath("$.sources[0].url", equalTo(newSource.url))
+            jsonPath("$.sources[0].name", equalTo(newSource.name))
         }
 
         // Then
