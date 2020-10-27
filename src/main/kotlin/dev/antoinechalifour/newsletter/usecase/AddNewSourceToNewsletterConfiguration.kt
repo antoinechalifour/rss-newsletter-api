@@ -6,7 +6,7 @@ import java.util.UUID
 
 @Component
 class AddNewSourceToNewsletterConfiguration(val newsletterConfigurationPort: NewsletterConfigurationPort) {
-    operator fun invoke(newsletterConfigurationId: String, url: String, name: String = "") =
+    operator fun invoke(newsletterConfigurationId: String, url: String, name: String) =
         newsletterConfigurationPort
             .ofId(UUID.fromString(newsletterConfigurationId))
             .apply {

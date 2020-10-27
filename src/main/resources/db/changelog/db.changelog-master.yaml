@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/db.2_add_newsletter_configuration_table.yaml
   - include:
       file: db/changelog/db.3_add_newsletter_table.yaml
+  - include:
+      file: db/changelog/db.4_add_source_name_column.yaml

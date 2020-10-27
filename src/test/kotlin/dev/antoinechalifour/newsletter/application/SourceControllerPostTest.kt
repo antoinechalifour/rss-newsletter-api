@@ -68,7 +68,7 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
     @Test
     fun `returns a 404 when the newsletter configuration is not found`() {
         // Given
-        whenever(addNewSourceToNewsletterConfiguration.invoke(any(), any())).thenThrow(NoSuchElementException())
+        whenever(addNewSourceToNewsletterConfiguration.invoke(any(), any(), any())).thenThrow(NoSuchElementException())
 
         // When
         mockMvc.post("/api/v1/newsletter-configuration/not-a-valid-id/sources") {
