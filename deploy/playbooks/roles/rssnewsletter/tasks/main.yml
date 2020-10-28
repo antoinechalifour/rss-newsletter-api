@@ -5,11 +5,20 @@
     force: true
   loop: ["antoinechalifour/rss-newsletter:latest"]
 
+- name: Create DB volumne directory
+  file:
+    path: "{{ db_data_dir }}"
+    state: directory
+
 - name: Ensure PG is running
   docker_container:
     name: rss_newsletter_db
     image: postgres:13.0
     state: started
+    mounts:
+      - source: "{{ db_data_dir }}"
+        target: "/var/lib/postgresql/data"
+        type: bind
     env:
       POSTGRES_USER: "{{ db_user }}"
       POSTGRES_PASSWORD: "{{ db_password }}"
@@ -22,6 +31,7 @@
     name: rss_newsletter_api
     image: antoinechalifour/rss-newsletter
     state: started
+    restart: yes
     env:
       SIMPLEJAVAMAIL_SMTP_HOST: "{{ smtp_host }}"
       SIMPLEJAVAMAIL_SMTP_PORT: ""
