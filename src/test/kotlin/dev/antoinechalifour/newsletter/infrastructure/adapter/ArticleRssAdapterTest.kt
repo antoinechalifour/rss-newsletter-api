@@ -48,7 +48,24 @@ internal class ArticleRssAdapterTest {
     @Test
     fun `returns the articles from the RSS feed`() {
         // Given
-        val aSource = aSource().withUrl(mockWebServer.url("/feed.xml").toString()).build()
+        val aSource = aSource()
+            .withName("RSS Source")
+            .withUrl(mockWebServer.url("/feed.xml").toString())
+            .build()
+        val theArticles = listOf(
+            Article(
+                "RSS Solutions for Restaurants",
+                "http://www.feedforall.com/restaurant.htm",
+                LocalDateTime.of(2004, 10, 19, 11, 9, 11),
+                "RSS Source"
+            ),
+            Article(
+                "RSS Solutions for Schools and Colleges",
+                "http://www.feedforall.com/schools.htm",
+                LocalDateTime.of(2004, 10, 19, 11, 9, 9),
+                "RSS Source"
+            )
+        )
         val articlesRssAdapter = ArticleRssAdapter(rssService)
         mockWebServer.enqueue(aValidRssFeed())
 
@@ -57,7 +74,9 @@ internal class ArticleRssAdapterTest {
 
         // Then
         assertThat(articles).usingRecursiveComparison()
-            .isEqualTo(theArticles())
+            .isEqualTo(
+                theArticles
+            )
     }
 
     @Test
@@ -119,17 +138,4 @@ internal class ArticleRssAdapterTest {
     private fun aValidRssFeed() = MockResponse()
         .setResponseCode(HttpURLConnection.HTTP_OK)
         .setBody("/test-http/rss-feed.xml".asTestResourceFileContent())
-
-    private fun theArticles() = listOf(
-        Article(
-            "RSS Solutions for Restaurants",
-            "http://www.feedforall.com/restaurant.htm",
-            LocalDateTime.of(2004, 10, 19, 11, 9, 11)
-        ),
-        Article(
-            "RSS Solutions for Schools and Colleges",
-            "http://www.feedforall.com/schools.htm",
-            LocalDateTime.of(2004, 10, 19, 11, 9, 9)
-        )
-    )
 }

@@ -78,7 +78,8 @@ open class NewsletterDatabase(
         fun toArticle() = Article(
             title,
             url,
-            LocalDateTime.ofEpochSecond(pubDate, 0, ZoneOffset.UTC)
+            LocalDateTime.ofEpochSecond(pubDate, 0, ZoneOffset.UTC),
+            ""
         )
     }
 

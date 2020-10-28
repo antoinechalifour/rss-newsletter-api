@@ -13,7 +13,7 @@ class RssFeedXml {
     @field:Element(name = "channel")
     lateinit var channel: Channel
 
-    fun articles() = channel.items.map { Article(it.title, it.link, it.pubDate.parse()) }
+    fun articles(source: String) = channel.items.map { Article(it.title, it.link, it.pubDate.parse(), source) }
 
     @Root(name = "channel", strict = false)
     class Channel {
