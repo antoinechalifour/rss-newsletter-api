@@ -76,6 +76,26 @@ internal class ArticleRssAdapterTest {
             .isEqualTo(emptyList<Source>())
     }
 
+    @Test
+    fun `returns an empty list when the response is not valid xml`() {
+        // Given
+        val aSource = aSource().withUrl(mockWebServer.url("/feed.xml").toString()).build()
+        val invalidResponse = anInvalidRssResponse()
+        val articlesRssAdapter = ArticleRssAdapter(rssService)
+        mockWebServer.enqueue(invalidResponse)
+
+        // When
+        val articles = articlesRssAdapter.ofSource(aSource)
+
+        // Then
+        assertThat(articles).usingRecursiveComparison()
+            .isEqualTo(emptyList<Source>())
+    }
+
+    private fun anInvalidRssResponse() = MockResponse()
+        .setResponseCode(HttpURLConnection.HTTP_OK)
+        .setBody("/test-http/invalid-rss-feed.xml".asTestResourceFileContent())
+
     private fun aValidRssFeed() = MockResponse()
         .setResponseCode(HttpURLConnection.HTTP_OK)
         .setBody("/test-http/rss-feed.xml".asTestResourceFileContent())
