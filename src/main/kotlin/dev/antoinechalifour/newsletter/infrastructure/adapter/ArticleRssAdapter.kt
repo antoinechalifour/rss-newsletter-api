@@ -11,11 +11,14 @@ import java.time.format.DateTimeFormatter
 
 @Component
 class ArticleRssAdapter(val rssService: RssService) : ArticlePort {
-    override fun ofSource(source: Source): List<Article> =
+    override fun ofSource(source: Source): List<Article> = try {
         rssService.getRss(source.url)
             .execute().body()
             ?.channel?.items?.map(this::fromXmlItem)
             ?: emptyList()
+    } catch (e: Exception) {
+        emptyList()
+    }
 
     private fun fromXmlItem(item: RssFeedXml.Channel.Item) = Article(item.title, item.link, item.pubDate.parse())
 }
