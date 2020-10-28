@@ -15,5 +15,3 @@ class ArticleRssAdapter(val rssService: RssService) : ArticlePort {
         emptyList()
     }
 }
-
-
