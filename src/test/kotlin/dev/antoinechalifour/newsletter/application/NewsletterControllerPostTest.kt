@@ -36,6 +36,7 @@ internal class NewsletterControllerPostTest : ApiIntegrationTest() {
         val anArticle = anArticle(clock)
             .withTitle("The article title")
             .withUrl("https://blog.octo.com/article")
+            .withSource("Blog Octo")
             .build()
         val newsletter = aNewsletter()
             .withNewsletterConfigurationId(newsletterConfigurationId)
@@ -53,6 +54,7 @@ internal class NewsletterControllerPostTest : ApiIntegrationTest() {
             jsonPath("$.articles[0].title", equalTo("The article title"))
             jsonPath("$.articles[0].url", equalTo("https://blog.octo.com/article"))
             jsonPath("$.articles[0].pubDate", equalTo("2020-10-19T19:30:00"))
+            jsonPath("$.articles[0].source", equalTo("Blog Octo"))
         }
     }
 
