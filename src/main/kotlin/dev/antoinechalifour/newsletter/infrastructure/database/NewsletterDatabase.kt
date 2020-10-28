@@ -68,18 +68,20 @@ open class NewsletterDatabase(
         val title: String,
         val url: String,
         val pubDate: Long,
+        val source: String,
     ) {
         constructor(article: Article) : this(
             article.title,
             article.url,
-            article.pubDate.toEpochSecond(ZoneOffset.UTC)
+            article.pubDate.toEpochSecond(ZoneOffset.UTC),
+            article.source
         )
 
         fun toArticle() = Article(
             title,
             url,
             LocalDateTime.ofEpochSecond(pubDate, 0, ZoneOffset.UTC),
-            ""
+            source
         )
     }
 
