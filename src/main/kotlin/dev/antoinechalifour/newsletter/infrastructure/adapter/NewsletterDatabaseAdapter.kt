@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class NewsletterDatabaseAdapter(val newsletterRepository: NewsletterRepository) : NewsletterPort {
+class NewsletterDatabaseAdapter(private val newsletterRepository: NewsletterRepository) : NewsletterPort {
     override fun all() = newsletterRepository.findAll().map { it.toNewsletter() }
 
     override fun save(newsletter: Newsletter) {
@@ -19,4 +19,8 @@ class NewsletterDatabaseAdapter(val newsletterRepository: NewsletterRepository) 
         .findById(id)
         .map { it.toNewsletter() }
         .orElseThrow()
+
+    override fun ofNewsletterConfigurationId(newsletterConfigurationId: UUID) =
+        newsletterRepository.findByNewsletterConfigurationId(newsletterConfigurationId)
+            .map { it.toNewsletter() }
 }
