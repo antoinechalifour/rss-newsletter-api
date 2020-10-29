@@ -5,4 +5,6 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface NewsletterRepository : JpaRepository<NewsletterDatabase, UUID>
+interface NewsletterRepository : JpaRepository<NewsletterDatabase, UUID> {
+    fun findByNewsletterConfigurationId(newsletterConfigurationId: UUID): List<NewsletterDatabase>
+}

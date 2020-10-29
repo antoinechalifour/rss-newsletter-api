@@ -19,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneId
 
 internal class SendNewsletterTest {
@@ -118,6 +119,7 @@ internal class SendNewsletterTest {
         val newsletter = sendNewsletter(theNewsletterConfiguration.id.toString())
 
         // Then
+        assertThat(newsletter).hasBeenSentAt(LocalDateTime.now(clock))
         assertThat(newsletter).hasNewsletterConfigurationId(theNewsletterConfiguration.id)
         assertThat(newsletter).hasRecipient(theRecipient)
         assertThat(newsletter).hasOnlyTheArticles(aTechArticle)
