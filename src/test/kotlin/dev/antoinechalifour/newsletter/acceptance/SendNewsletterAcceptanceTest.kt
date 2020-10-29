@@ -64,7 +64,8 @@ class SendNewsletterAcceptanceTest : AcceptanceTest() {
         newsletterConfiguration = aNewsletterConfiguration().withSources(aSource).build()
         newsletterConfigurationDatabaseAdapter.save(newsletterConfiguration)
 
-        whenever(mjmlService.render(any())).thenReturn(anHttpCallStub(MjmlResponse("some html")))
+        val mjmlResponse = anHttpCallStub(MjmlResponse("some html"))
+        whenever(mjmlService.render(any())).thenReturn(mjmlResponse)
     }
 
     @AfterEach

@@ -3,6 +3,7 @@ package dev.antoinechalifour.newsletter
 import dev.antoinechalifour.newsletter.RecipientTestBuilder.Companion.aRecipient
 import dev.antoinechalifour.newsletter.domain.Article
 import dev.antoinechalifour.newsletter.domain.Newsletter
+import java.time.LocalDateTime
 import java.util.UUID
 
 class NewsletterTestBuilder {
@@ -15,9 +16,10 @@ class NewsletterTestBuilder {
     private var newsletterConfigurationId = UUID.randomUUID()
     private var recipient = aRecipient().build()
     private var articles = emptyList<Article>()
+    private var sentAt = LocalDateTime.of(2020, 11, 1, 12, 30)
 
     fun withArticles(vararg theArticles: Article) = apply { articles = theArticles.toList() }
     fun withNewsletterConfigurationId(theNewsletterConfigurationId: UUID) =
         apply { newsletterConfigurationId = theNewsletterConfigurationId }
-    fun build() = Newsletter(id, newsletterConfigurationId, recipient, articles)
+    fun build() = Newsletter(id, newsletterConfigurationId, recipient, articles, sentAt)
 }

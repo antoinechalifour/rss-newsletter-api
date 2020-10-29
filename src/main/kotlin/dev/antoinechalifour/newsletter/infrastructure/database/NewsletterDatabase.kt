@@ -48,19 +48,22 @@ open class NewsletterDatabase(
         val newsletterConfigurationId: String,
         val recipient: JsonRecipient,
         val articles: List<JsonArticle>,
+        val sentAt: Long,
     ) {
         constructor(newsletter: Newsletter) : this(
             newsletter.id.toString(),
             newsletter.newsletterConfigurationId.toString(),
             JsonRecipient(newsletter.recipient),
-            newsletter.articles.map { JsonArticle(it) }
+            newsletter.articles.map { JsonArticle(it) },
+            newsletter.sentAt.toEpochSecond(ZoneOffset.UTC)
         )
 
         fun toNewsletter() = Newsletter(
             UUID.fromString(id),
             UUID.fromString(newsletterConfigurationId),
             recipient.toRecipient(),
-            articles.map { it.toArticle() }
+            articles.map { it.toArticle() },
+            LocalDateTime.ofEpochSecond(sentAt, 0, ZoneOffset.UTC)
         )
     }
 

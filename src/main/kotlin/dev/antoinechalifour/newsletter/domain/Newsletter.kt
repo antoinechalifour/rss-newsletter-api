@@ -8,7 +8,8 @@ data class Newsletter(
     val id: UUID,
     val newsletterConfigurationId: UUID,
     val recipient: Recipient,
-    val articles: List<Article>
+    val articles: List<Article>,
+    val sentAt: LocalDateTime
 ) {
     companion object {
         fun forToday(
@@ -20,7 +21,8 @@ data class Newsletter(
             UUID.randomUUID(),
             newsletterConfigurationId,
             recipient,
-            articles.filter { it.publishedAfter(yesterday(clock)) }
+            articles.filter { it.publishedAfter(yesterday(clock)) },
+            LocalDateTime.now(clock)
         )
 
         private fun yesterday(clock: Clock) =
