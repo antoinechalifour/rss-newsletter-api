@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.post
 import java.time.Clock
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.UUID
 
@@ -33,6 +34,7 @@ internal class NewsletterControllerPostTest : ApiIntegrationTest() {
     @Test
     fun `should send the newsletter`() {
         val newsletterConfigurationId = UUID.randomUUID()
+        val sendingDate = LocalDateTime.now(clock)
         val anArticle = anArticle(clock)
             .withTitle("The article title")
             .withUrl("https://blog.octo.com/article")
@@ -41,6 +43,7 @@ internal class NewsletterControllerPostTest : ApiIntegrationTest() {
         val newsletter = aNewsletter()
             .withNewsletterConfigurationId(newsletterConfigurationId)
             .withArticles(anArticle)
+            .sentAt(sendingDate)
             .build()
         whenever(sendNewsletter.invoke(newsletterConfigurationId.toString())).thenReturn(newsletter)
 
@@ -50,6 +53,7 @@ internal class NewsletterControllerPostTest : ApiIntegrationTest() {
             status { isOk }
             jsonPath("$.id", equalTo(newsletter.id.toString()))
             jsonPath("$.newsletterConfigurationId", equalTo(newsletter.newsletterConfigurationId.toString()))
+            jsonPath("$.sentAt", equalTo("2020-10-19T19:30:00"))
             jsonPath("$.articles.length()", equalTo(1))
             jsonPath("$.articles[0].title", equalTo("The article title"))
             jsonPath("$.articles[0].url", equalTo("https://blog.octo.com/article"))

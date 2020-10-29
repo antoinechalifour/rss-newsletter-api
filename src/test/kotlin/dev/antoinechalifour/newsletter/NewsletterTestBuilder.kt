@@ -21,5 +21,6 @@ class NewsletterTestBuilder {
     fun withArticles(vararg theArticles: Article) = apply { articles = theArticles.toList() }
     fun withNewsletterConfigurationId(theNewsletterConfigurationId: UUID) =
         apply { newsletterConfigurationId = theNewsletterConfigurationId }
+    fun sentAt(date: LocalDateTime) = apply { sentAt = date }
     fun build() = Newsletter(id, newsletterConfigurationId, recipient, articles, sentAt)
 }
