@@ -1,5 +1,5 @@
 <mjml>
-    <mj-body background-color="#f1f1f1">
+    <mj-body>
         <mj-section>
             <mj-column>
                 <mj-text font-size="20px" color="#373737" font-family="helvetica" align="center">
@@ -10,8 +10,14 @@
         </mj-section>
 
         <mj-wrapper th:each="article,index : ${articles}" padding="0">
-            <mj-section background-color="#fff" padding="20px" border="1px solid #ddd">
+            <mj-section background-color="#fefefe" padding="20px" border="1px solid #ddd">
                 <mj-column>
+                    <mj-text padding="5px 0" font-size="12px" color="#555">
+                      <span th:text="${article.source}">
+                        Lorem ipsum dolor
+                      </span>
+                    </mj-text>
+
                     <mj-text padding="5px 0" font-size="20px" color="#373737" font-family="helvetica" line-height="1.5">
                       <span th:text="${article.title}">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pretium, ipsum eget auctor dapibus

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 class ArticleRssAdapter(val rssService: RssService) : ArticlePort {
     override fun ofSource(source: Source) = try {
         rssService.getRss(source.url).execute().body()
-            ?.articles()
+            ?.articles(source.name)
             ?: emptyList()
     } catch (e: Exception) {
         emptyList()
