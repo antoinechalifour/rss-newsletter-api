@@ -11,7 +11,7 @@ import java.util.UUID
 class RecipientDatabaseAdapter(val recipientRepository: RecipientRepository) : RecipientPort {
     override fun ofId(id: UUID): Recipient = recipientRepository.findById(id)
         .map { it.toRecipient() }
-        .orElseThrow()
+        .orElseThrow { NoSuchElementException("Recipient $id was not found") }
 
     override fun save(recipient: Recipient) {
         recipientRepository.save(RecipientDatabase.of(recipient))
