@@ -21,6 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.time.Clock
 import java.time.ZoneId
+import java.util.UUID
 
 @SpringBootApplication
 @EnableScheduling
@@ -51,7 +52,7 @@ class NewsletterApplication {
     fun recipient(
         @Value("\${newsletter.recipient.name}") name: String,
         @Value("\${newsletter.recipient.email}") email: String
-    ) = Recipient(name, email)
+    ) = Recipient(UUID.randomUUID(), name, email)
 
     @Bean
     fun clock() = Clock.system(ZoneId.of("Europe/Paris"))

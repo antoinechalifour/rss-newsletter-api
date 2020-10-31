@@ -15,14 +15,17 @@ import dev.antoinechalifour.newsletter.domain.ArticlePort
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
 import dev.antoinechalifour.newsletter.domain.NewsletterPort
 import dev.antoinechalifour.newsletter.domain.NewsletterSender
+import dev.antoinechalifour.newsletter.domain.RecipientPort
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.UUID
 
 internal class SendNewsletterTest {
+    private lateinit var recipientPort: RecipientPort
     private lateinit var newsletterPort: NewsletterPort
     private lateinit var newsletterConfigurationPort: NewsletterConfigurationPort
     private lateinit var newsletterSender: NewsletterSender
@@ -31,6 +34,7 @@ internal class SendNewsletterTest {
 
     @BeforeEach
     fun setup() {
+        recipientPort = mock()
         newsletterPort = mock()
         newsletterConfigurationPort = mock()
         newsletterSender = mock()
@@ -40,20 +44,22 @@ internal class SendNewsletterTest {
     @Test
     fun `sends the newsletter with articles from multiple sources`() {
         // Given
-        val theRecipient = aRecipient().build()
+        val theRecipient = aRecipient().withId(UUID.randomUUID()).build()
         val aTechSource = aSource().withUrl("https://blog.octo.com/feed/").build()
         val aNewsSource = aSource().withUrl("https://www.lemonde.fr/rss/une.xml").build()
         val aTechArticle = anArticle(clock).withUrl("https://blog.octo.com/article-1").build()
         val aNewsArticles = anArticle(clock).withUrl("https://www.lemonde.fr/article-2").build()
         val theNewsletterConfiguration = aNewsletterConfiguration()
             .withSources(aTechSource, aNewsSource)
+            .withRecipientId(theRecipient.id)
             .build()
 
         val sendNewsletter = SendNewsletter(
-            theRecipient, clock, newsletterPort, newsletterConfigurationPort, articlePort, newsletterSender
+            recipientPort, clock, newsletterPort, newsletterConfigurationPort, articlePort, newsletterSender
         )
 
         whenever(newsletterConfigurationPort.ofId(theNewsletterConfiguration.id)).thenReturn(theNewsletterConfiguration)
+        whenever(recipientPort.ofId(theNewsletterConfiguration.recipientId)).thenReturn(theRecipient)
         whenever(articlePort.ofSource(aTechSource)).thenReturn(listOf(aTechArticle))
         whenever(articlePort.ofSource(aNewsSource)).thenReturn(listOf(aNewsArticles))
 
@@ -80,7 +86,7 @@ internal class SendNewsletterTest {
             .build()
 
         val sendNewsletter = SendNewsletter(
-            aRecipient().build(),
+            recipientPort,
             clock,
             newsletterPort,
             newsletterConfigurationPort,
@@ -89,6 +95,7 @@ internal class SendNewsletterTest {
         )
 
         whenever(newsletterConfigurationPort.ofId(theNewsletterConfiguration.id)).thenReturn(theNewsletterConfiguration)
+        whenever(recipientPort.ofId(theNewsletterConfiguration.recipientId)).thenReturn(aRecipient().build())
         whenever(articlePort.ofSource(aSource)).thenReturn(listOf(anArticleFromToday, anArticleFromYesterday))
 
         // When
@@ -109,10 +116,11 @@ internal class SendNewsletterTest {
         val theNewsletterConfiguration = aNewsletterConfiguration().withSources(aTechSource).build()
 
         val sendNewsletter = SendNewsletter(
-            theRecipient, clock, newsletterPort, newsletterConfigurationPort, articlePort, newsletterSender
+            recipientPort, clock, newsletterPort, newsletterConfigurationPort, articlePort, newsletterSender
         )
 
         whenever(newsletterConfigurationPort.ofId(theNewsletterConfiguration.id)).thenReturn(theNewsletterConfiguration)
+        whenever(recipientPort.ofId(theNewsletterConfiguration.recipientId)).thenReturn(theRecipient)
         whenever(articlePort.ofSource(aTechSource)).thenReturn(listOf(aTechArticle))
 
         // When
@@ -136,7 +144,7 @@ internal class SendNewsletterTest {
             .build()
 
         val sendNewsletter = SendNewsletter(
-            aRecipient().build(),
+            recipientPort,
             clock,
             newsletterPort,
             newsletterConfigurationPort,
@@ -145,6 +153,7 @@ internal class SendNewsletterTest {
         )
 
         whenever(newsletterConfigurationPort.ofId(theNewsletterConfiguration.id)).thenReturn(theNewsletterConfiguration)
+        whenever(recipientPort.ofId(theNewsletterConfiguration.recipientId)).thenReturn(aRecipient().build())
         whenever(articlePort.ofSource(aSource)).thenReturn(emptyList())
 
         // When

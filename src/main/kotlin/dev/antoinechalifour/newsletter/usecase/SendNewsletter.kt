@@ -5,14 +5,14 @@ import dev.antoinechalifour.newsletter.domain.Newsletter
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
 import dev.antoinechalifour.newsletter.domain.NewsletterPort
 import dev.antoinechalifour.newsletter.domain.NewsletterSender
-import dev.antoinechalifour.newsletter.domain.Recipient
+import dev.antoinechalifour.newsletter.domain.RecipientPort
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.util.UUID
 
 @Component
 class SendNewsletter(
-    private val recipient: Recipient,
+    private val recipientPort: RecipientPort,
     private val clock: Clock,
     private val newsletterPort: NewsletterPort,
     private val newsletterConfigurationPort: NewsletterConfigurationPort,
@@ -23,6 +23,7 @@ class SendNewsletter(
         val newletterConfigurationId = UUID.fromString(newsletterConfigurationId)
 
         return newsletterConfigurationPort.ofId(newletterConfigurationId).run {
+            val recipient = recipientPort.ofId(recipientId)
             val articles = sources.map(articlePort::ofSource).flatten()
 
             Newsletter.forToday(recipient, newletterConfigurationId, articles, clock)

@@ -4,11 +4,14 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import dev.antoinechalifour.newsletter.infrastructure.database.NewsletterConfigurationRepository
 import dev.antoinechalifour.newsletter.infrastructure.database.NewsletterRepository
+import dev.antoinechalifour.newsletter.infrastructure.database.RecipientRepository
 import org.springframework.beans.factory.annotation.Autowired
 import retrofit2.Call
 import retrofit2.Response
 
 abstract class AcceptanceTest {
+    @Autowired
+    protected lateinit var recipientRepository: RecipientRepository
 
     @Autowired
     protected lateinit var newsletterConfigurationRepository: NewsletterConfigurationRepository
@@ -17,8 +20,9 @@ abstract class AcceptanceTest {
     protected lateinit var newsletterRepository: NewsletterRepository
 
     protected fun cleanupDatabase() {
-        newsletterRepository.deleteAll()
         newsletterConfigurationRepository.deleteAll()
+        recipientRepository.deleteAll()
+        newsletterRepository.deleteAll()
     }
 
     protected fun <T> anHttpCallStub(response: T): Call<T> {

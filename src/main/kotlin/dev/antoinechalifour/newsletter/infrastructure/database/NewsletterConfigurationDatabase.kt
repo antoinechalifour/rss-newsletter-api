@@ -20,10 +20,13 @@ open class NewsletterConfigurationDatabase(
         cascade = [CascadeType.ALL],
         fetch = FetchType.EAGER
     )
-    open var sources: MutableList<SourceDatabase> = mutableListOf()
+    open var sources: MutableList<SourceDatabase> = mutableListOf(),
+
+    open var recipientId: UUID? = null
 ) {
     fun toNewsletterConfiguration() = NewsletterConfiguration(
         checkNotNull(id),
+        checkNotNull(recipientId),
         sources.map { it.toSource() }.toMutableList()
     )
 
@@ -31,7 +34,8 @@ open class NewsletterConfigurationDatabase(
         fun of(newsletterConfiguration: NewsletterConfiguration): NewsletterConfigurationDatabase =
             NewsletterConfigurationDatabase(
                 newsletterConfiguration.id,
-                mutableListOf()
+                mutableListOf(),
+                newsletterConfiguration.recipientId
             ).apply {
                 sources.addAll(SourceDatabase.ofAll(newsletterConfiguration.sources, this))
             }

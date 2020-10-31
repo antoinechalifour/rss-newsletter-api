@@ -10,10 +10,9 @@ class NewsletterConfigurationTestBuilder {
         fun aNewsletterConfiguration() = NewsletterConfigurationTestBuilder()
     }
 
+    private var recipientId = UUID.randomUUID()
     private var id = UUID.randomUUID()
     private var sources = mutableListOf<Source>()
-
-    fun build() = NewsletterConfiguration(id, sources)
 
     fun withSources(vararg theSources: Source) = apply {
         sources = theSources.toMutableList()
@@ -22,4 +21,7 @@ class NewsletterConfigurationTestBuilder {
     fun withSources(vararg theSources: SourceTestBuilder) = apply {
         sources = theSources.map { it.build() }.toMutableList()
     }
+
+    fun withRecipientId(theRecipientId: UUID) = apply { recipientId = theRecipientId }
+    fun build() = NewsletterConfiguration(id, recipientId, sources)
 }

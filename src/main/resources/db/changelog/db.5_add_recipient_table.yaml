@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-recipient-table
+      author: antoinechalifour
+      changes:
+        - createTable:
+            tableName: recipient
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: text
+                  constraints:
+                    nullable: false
+                    unique: true
+
+        - addColumn:
+            tableName: newsletter_configuration
+            columns:
+              - column:
+                  name: recipient_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_newsletter_configuration_recipient
+                    references: recipient(id)
