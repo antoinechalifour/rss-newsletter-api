@@ -3,6 +3,7 @@ package dev.antoinechalifour.newsletter.infrastructure.adapter
 import dev.antoinechalifour.newsletter.ArticleTestBuilder.Companion.anArticle
 import dev.antoinechalifour.newsletter.NewsletterTestBuilder.Companion.aNewsletter
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
+import java.util.UUID
 
 @SpringBootTest
 internal class NewsletterDatabaseAdapterTest : DatabaseAdapterTest() {
@@ -38,6 +40,15 @@ internal class NewsletterDatabaseAdapterTest : DatabaseAdapterTest() {
         assertThat(newsletterDatabaseAdapter.ofId(newsletter.id))
             .usingRecursiveComparison()
             .isEqualTo(newsletter)
+    }
+
+    @Test
+    fun `throws an exception when the newsletter is not found`() {
+        val idWithoutNewsletter = UUID.randomUUID()
+
+        assertThatThrownBy { newsletterDatabaseAdapter.ofId(idWithoutNewsletter) }
+            .isInstanceOf(NoSuchElementException::class.java)
+            .hasMessage("Newsletter $idWithoutNewsletter was not found")
     }
 
     private fun now() = Instant.parse("2020-10-19T17:30:00.00Z")

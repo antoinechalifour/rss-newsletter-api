@@ -89,15 +89,18 @@ open class NewsletterDatabase(
     }
 
     data class JsonRecipient(
+        val id: UUID,
         val name: String,
         val email: String
     ) {
         constructor(recipient: Recipient) : this(
+            recipient.id,
             recipient.name,
             recipient.email
         )
 
         fun toRecipient() = Recipient(
+            id,
             name,
             email
         )

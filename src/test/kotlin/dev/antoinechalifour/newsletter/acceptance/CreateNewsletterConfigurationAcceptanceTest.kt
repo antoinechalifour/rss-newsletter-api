@@ -1,6 +1,9 @@
 package dev.antoinechalifour.newsletter.acceptance
 
+import dev.antoinechalifour.newsletter.RecipientTestBuilder.Companion.aRecipient
+import dev.antoinechalifour.newsletter.application.NewsletterConfigurationController.Companion.HARDCODED_USER_ID
 import dev.antoinechalifour.newsletter.basicAuth
+import dev.antoinechalifour.newsletter.domain.RecipientPort
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,9 +20,14 @@ class CreateNewsletterConfigurationAcceptanceTest : AcceptanceTest() {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
+    @Autowired
+    private lateinit var recipientPort: RecipientPort
+
     @BeforeEach
     fun setup() {
         cleanupDatabase()
+
+        recipientPort.save(aRecipient().withId(HARDCODED_USER_ID).build())
     }
 
     @Test

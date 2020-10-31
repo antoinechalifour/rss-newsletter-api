@@ -1,10 +1,12 @@
 package dev.antoinechalifour.newsletter.acceptance
 
+import dev.antoinechalifour.newsletter.RecipientTestBuilder.Companion.aRecipient
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.asserts.NewsletterConfigurationAssert.Companion.assertThat
 import dev.antoinechalifour.newsletter.basicAuth
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
+import dev.antoinechalifour.newsletter.domain.RecipientPort
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,23 +20,27 @@ import java.util.UUID
 @SpringBootTest
 @AutoConfigureMockMvc
 internal class AddNewSourceToNewsletterConfigurationAcceptanceTest : AcceptanceTest() {
+    private lateinit var newsletterConfigurationId: UUID
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
     @Autowired
-    private lateinit var newsletterConfigurationPort: NewsletterConfigurationPort
+    private lateinit var recipientPort: RecipientPort
 
-    private lateinit var newsletterConfigurationId: UUID
+    @Autowired
+    private lateinit var newsletterConfigurationPort: NewsletterConfigurationPort
 
     @BeforeEach
     fun setup() {
         cleanupDatabase()
 
-        newsletterConfigurationId = UUID.randomUUID()
-        NewsletterConfiguration(newsletterConfigurationId).run {
-            newsletterConfigurationPort.save(this)
-        }
+        val recipient = aRecipient().build()
+        val newsletterConfiguration = NewsletterConfiguration(UUID.randomUUID(), recipient.id)
+
+        newsletterConfigurationId = newsletterConfiguration.id
+        recipientPort.save(recipient)
+        newsletterConfigurationPort.save(newsletterConfiguration)
     }
 
     @Test

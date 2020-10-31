@@ -1,6 +1,5 @@
 package dev.antoinechalifour.newsletter
 
-import dev.antoinechalifour.newsletter.domain.Recipient
 import dev.antoinechalifour.newsletter.infrastructure.http.mjml.MjmlService
 import dev.antoinechalifour.newsletter.infrastructure.http.rss.RssService
 import okhttp3.Credentials
@@ -46,12 +45,6 @@ class NewsletterApplication {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(MjmlService::class.java)
-
-    @Bean
-    fun recipient(
-        @Value("\${newsletter.recipient.name}") name: String,
-        @Value("\${newsletter.recipient.email}") email: String
-    ) = Recipient(name, email)
 
     @Bean
     fun clock() = Clock.system(ZoneId.of("Europe/Paris"))

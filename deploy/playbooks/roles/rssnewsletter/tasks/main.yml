@@ -37,8 +37,6 @@
       SIMPLEJAVAMAIL_SMTP_PORT: ""
       SIMPLEJAVAMAIL_SMTP_USERNAME: "{{ smtp_username }}"
       SIMPLEJAVAMAIL_SMTP_PASSWORD: "{{ smtp_password }}"
-      NEWSLETTER_RECIPIENT_NAME: "{{ recipient_name }}"
-      NEWSLETTER_RECIPIENT_EMAIL: "{{ recipient_email }}"
       NEWSLETTER_AUTH_USERNAME: "{{ auth_username }}"
       NEWSLETTER_AUTH_PASSWORD: "{{ auth_password }}"
       MJML_USER: "{{ mjml_user }}"

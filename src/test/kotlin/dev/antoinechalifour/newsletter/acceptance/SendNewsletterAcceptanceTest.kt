@@ -1,15 +1,19 @@
 package dev.antoinechalifour.newsletter.acceptance
 
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.check
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder.Companion.aNewsletterConfiguration
+import dev.antoinechalifour.newsletter.RecipientTestBuilder.Companion.aRecipient
 import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.basicAuth
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
-import dev.antoinechalifour.newsletter.infrastructure.adapter.NewsletterConfigurationDatabaseAdapter
-import dev.antoinechalifour.newsletter.infrastructure.adapter.NewsletterDatabaseAdapter
+import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
+import dev.antoinechalifour.newsletter.domain.NewsletterPort
+import dev.antoinechalifour.newsletter.domain.Recipient
+import dev.antoinechalifour.newsletter.domain.RecipientPort
 import dev.antoinechalifour.newsletter.infrastructure.http.mjml.MjmlResponse
 import dev.antoinechalifour.newsletter.infrastructure.http.mjml.MjmlService
 import okhttp3.mockwebserver.MockResponse
@@ -30,21 +34,26 @@ import org.springframework.test.web.servlet.post
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
+import java.util.UUID
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class SendNewsletterAcceptanceTest : AcceptanceTest() {
-    private lateinit var newsletterConfiguration: NewsletterConfiguration
+    private lateinit var theRecipient: Recipient
+    private lateinit var theNewsletterConfiguration: NewsletterConfiguration
     private var mockWebServer = MockWebServer()
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
     @Autowired
-    private lateinit var newsletterDatabaseAdapter: NewsletterDatabaseAdapter
+    private lateinit var recipientPort: RecipientPort
 
     @Autowired
-    private lateinit var newsletterConfigurationDatabaseAdapter: NewsletterConfigurationDatabaseAdapter
+    private lateinit var newsletterPort: NewsletterPort
+
+    @Autowired
+    private lateinit var newsletterConfigurationPort: NewsletterConfigurationPort
 
     @MockBean
     private lateinit var mailer: Mailer
@@ -61,8 +70,19 @@ class SendNewsletterAcceptanceTest : AcceptanceTest() {
         mockWebServer.enqueue(response)
 
         val aSource = aSource().withUrl(mockWebServer.url("/source.xml").toString())
-        newsletterConfiguration = aNewsletterConfiguration().withSources(aSource).build()
-        newsletterConfigurationDatabaseAdapter.save(newsletterConfiguration)
+        val recipientId = UUID.randomUUID()
+
+        theRecipient = aRecipient()
+            .withId(recipientId)
+            .withEmail("jane.doe@gmail.com")
+            .build()
+        theNewsletterConfiguration = aNewsletterConfiguration()
+            .withRecipientId(recipientId)
+            .withSources(aSource)
+            .build()
+
+        recipientPort.save(theRecipient)
+        newsletterConfigurationPort.save(theNewsletterConfiguration)
 
         val mjmlResponse = anHttpCallStub(MjmlResponse("some html"))
         whenever(mjmlService.render(any())).thenReturn(mjmlResponse)
@@ -76,16 +96,26 @@ class SendNewsletterAcceptanceTest : AcceptanceTest() {
     @Test
     fun `sends the newsletter and saves it`() {
         // When
-        mockMvc.post("/api/v1/newsletter-configuration/${newsletterConfiguration.id}/newsletter") {
+        mockMvc.post("/api/v1/newsletter-configuration/${theNewsletterConfiguration.id}/newsletter") {
             basicAuth("admin", "passwd")
         }
 
         // Then
-        val newsletters =
-            newsletterDatabaseAdapter.ofNewsletterConfigurationId(newsletterConfiguration.id)
+        val newsletter = newsletterPort
+            .ofNewsletterConfigurationId(theNewsletterConfiguration.id)
+            .first()
 
-        assertThat(newsletters[0].newsletterConfigurationId).isEqualTo(newsletterConfiguration.id)
-        verify(mailer).sendMail(any())
+        assertThat(newsletter.newsletterConfigurationId).isEqualTo(theNewsletterConfiguration.id)
+        assertThat(newsletter.recipient)
+            .usingRecursiveComparison()
+            .isEqualTo(theRecipient)
+
+        verify(mailer).sendMail(
+            check {
+                assertThat(it.recipients).hasSize(1)
+                assertThat(it.recipients.first().address).isEqualTo(theRecipient.email)
+            }
+        )
     }
 
     @TestConfiguration

@@ -18,7 +18,7 @@ class NewsletterDatabaseAdapter(private val newsletterRepository: NewsletterRepo
     override fun ofId(id: UUID): Newsletter = newsletterRepository
         .findById(id)
         .map { it.toNewsletter() }
-        .orElseThrow()
+        .orElseThrow { NoSuchElementException("Newsletter $id was not found") }
 
     override fun ofNewsletterConfigurationId(newsletterConfigurationId: UUID) =
         newsletterRepository.findByNewsletterConfigurationId(newsletterConfigurationId)
