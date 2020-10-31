@@ -10,10 +10,10 @@ import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.basicAuth
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
+import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
+import dev.antoinechalifour.newsletter.domain.NewsletterPort
 import dev.antoinechalifour.newsletter.domain.Recipient
-import dev.antoinechalifour.newsletter.infrastructure.adapter.NewsletterConfigurationDatabaseAdapter
-import dev.antoinechalifour.newsletter.infrastructure.adapter.NewsletterDatabaseAdapter
-import dev.antoinechalifour.newsletter.infrastructure.adapter.RecipientDatabaseAdapter
+import dev.antoinechalifour.newsletter.domain.RecipientPort
 import dev.antoinechalifour.newsletter.infrastructure.http.mjml.MjmlResponse
 import dev.antoinechalifour.newsletter.infrastructure.http.mjml.MjmlService
 import okhttp3.mockwebserver.MockResponse
@@ -47,13 +47,13 @@ class SendNewsletterAcceptanceTest : AcceptanceTest() {
     private lateinit var mockMvc: MockMvc
 
     @Autowired
-    private lateinit var recipientDatabaseAdapter: RecipientDatabaseAdapter // TODO port ?
+    private lateinit var recipientPort: RecipientPort
 
     @Autowired
-    private lateinit var newsletterDatabaseAdapter: NewsletterDatabaseAdapter // TODO: port ?
+    private lateinit var newsletterPort: NewsletterPort
 
     @Autowired
-    private lateinit var newsletterConfigurationDatabaseAdapter: NewsletterConfigurationDatabaseAdapter // TODO: port ?
+    private lateinit var newsletterConfigurationPort: NewsletterConfigurationPort
 
     @MockBean
     private lateinit var mailer: Mailer
@@ -71,6 +71,7 @@ class SendNewsletterAcceptanceTest : AcceptanceTest() {
 
         val aSource = aSource().withUrl(mockWebServer.url("/source.xml").toString())
         val recipientId = UUID.randomUUID()
+
         theRecipient = aRecipient()
             .withId(recipientId)
             .withEmail("jane.doe@gmail.com")
@@ -80,8 +81,8 @@ class SendNewsletterAcceptanceTest : AcceptanceTest() {
             .withSources(aSource)
             .build()
 
-        recipientDatabaseAdapter.save(theRecipient)
-        newsletterConfigurationDatabaseAdapter.save(theNewsletterConfiguration)
+        recipientPort.save(theRecipient)
+        newsletterConfigurationPort.save(theNewsletterConfiguration)
 
         val mjmlResponse = anHttpCallStub(MjmlResponse("some html"))
         whenever(mjmlService.render(any())).thenReturn(mjmlResponse)
@@ -100,7 +101,7 @@ class SendNewsletterAcceptanceTest : AcceptanceTest() {
         }
 
         // Then
-        val newsletter = newsletterDatabaseAdapter
+        val newsletter = newsletterPort
             .ofNewsletterConfigurationId(theNewsletterConfiguration.id)
             .first()
 

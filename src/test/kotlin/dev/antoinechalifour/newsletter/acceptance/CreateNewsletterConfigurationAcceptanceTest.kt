@@ -27,9 +27,7 @@ class CreateNewsletterConfigurationAcceptanceTest : AcceptanceTest() {
     fun setup() {
         cleanupDatabase()
 
-        val theRecipient = aRecipient().withId(HARDCODED_USER_ID).build()
-
-        recipientPort.save(theRecipient)
+        recipientPort.save(aRecipient().withId(HARDCODED_USER_ID).build())
     }
 
     @Test
