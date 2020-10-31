@@ -1,6 +1,5 @@
 package dev.antoinechalifour.newsletter
 
-import dev.antoinechalifour.newsletter.domain.Recipient
 import dev.antoinechalifour.newsletter.infrastructure.http.mjml.MjmlService
 import dev.antoinechalifour.newsletter.infrastructure.http.rss.RssService
 import okhttp3.Credentials
@@ -21,7 +20,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.time.Clock
 import java.time.ZoneId
-import java.util.UUID
 
 @SpringBootApplication
 @EnableScheduling
@@ -47,12 +45,6 @@ class NewsletterApplication {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(MjmlService::class.java)
-
-    @Bean
-    fun recipient(
-        @Value("\${newsletter.recipient.name}") name: String,
-        @Value("\${newsletter.recipient.email}") email: String
-    ) = Recipient(UUID.randomUUID(), name, email)
 
     @Bean
     fun clock() = Clock.system(ZoneId.of("Europe/Paris"))
