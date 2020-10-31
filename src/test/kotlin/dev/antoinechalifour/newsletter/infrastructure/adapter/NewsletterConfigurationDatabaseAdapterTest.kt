@@ -3,6 +3,7 @@ package dev.antoinechalifour.newsletter.infrastructure.adapter
 import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder.Companion.aNewsletterConfiguration
 import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
+import dev.antoinechalifour.newsletter.infrastructure.RecipientDatabaseTestBuilder
 import dev.antoinechalifour.newsletter.infrastructure.database.RecipientDatabase
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -23,24 +24,15 @@ internal class NewsletterConfigurationDatabaseAdapterTest : DatabaseAdapterTest(
     fun setup() {
         cleanDatabase()
 
-        recipient = RecipientDatabase(
-            UUID.randomUUID(),
-            "Jane Doe",
-            "jane.doe@gmail.com"
-        ) // TODO: test builder ?
-
+        recipient = RecipientDatabaseTestBuilder().build()
         recipientRepository.save(recipient)
     }
 
     @Test
     fun `returns all newsletter configurations from the database`() {
         // Given
-        val newsletterConfiguration1 = aNewsletterConfiguration()
-            .withRecipientId(checkNotNull(recipient.id))
-            .build()
-        val newsletterConfiguration2 = aNewsletterConfiguration()
-            .withRecipientId(checkNotNull(recipient.id))
-            .build()
+        val newsletterConfiguration1 = aNewsletterConfiguration().withRecipientId(recipient.id!!).build()
+        val newsletterConfiguration2 = aNewsletterConfiguration().withRecipientId(recipient.id!!).build()
 
         // When
         newsletterConfigurationDatabaseAdapter.save(newsletterConfiguration1, newsletterConfiguration2)
@@ -52,9 +44,7 @@ internal class NewsletterConfigurationDatabaseAdapterTest : DatabaseAdapterTest(
     @Test
     fun `saves the configuration to the database`() {
         // Given
-        val newsletterConfiguration = aNewsletterConfiguration()
-            .withRecipientId(checkNotNull(recipient.id))
-            .build()
+        val newsletterConfiguration = aNewsletterConfiguration().withRecipientId(recipient.id!!).build()
 
         // When
         newsletterConfigurationDatabaseAdapter.save(newsletterConfiguration)
@@ -69,7 +59,7 @@ internal class NewsletterConfigurationDatabaseAdapterTest : DatabaseAdapterTest(
     fun `saves the configuration with the sources to the database`() {
         // Given
         val newsletterConfiguration = aNewsletterConfiguration()
-            .withRecipientId(checkNotNull(recipient.id))
+            .withRecipientId(recipient.id!!)
             .withSources(aSource())
             .build()
 
