@@ -106,7 +106,10 @@ class SendNewsletterAcceptanceTest : AcceptanceTest() {
             .first()
 
         assertThat(newsletter.newsletterConfigurationId).isEqualTo(theNewsletterConfiguration.id)
-        assertThat(newsletter.recipient).isEqualTo(theRecipient)
+        assertThat(newsletter.recipient)
+            .usingRecursiveComparison()
+            .isEqualTo(theRecipient)
+
         verify(mailer).sendMail(
             check {
                 assertThat(it.recipients).hasSize(1)

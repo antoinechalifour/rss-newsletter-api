@@ -9,5 +9,4 @@ class RecipientDatabaseTestBuilder {
     private var email = "john.doe@gmail.com"
 
     fun build() = RecipientDatabase(id, name, email)
-
 }
