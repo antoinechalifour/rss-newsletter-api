@@ -2,7 +2,7 @@ package dev.antoinechalifour.newsletter.acceptance
 
 import dev.antoinechalifour.newsletter.RecipientTestBuilder.Companion.aRecipient
 import dev.antoinechalifour.newsletter.application.NewsletterConfigurationController.Companion.HARDCODED_USER_ID
-import dev.antoinechalifour.newsletter.basicAuth
+import dev.antoinechalifour.newsletter.bearerToken
 import dev.antoinechalifour.newsletter.domain.RecipientPort
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.post
 @AutoConfigureMockMvc
 class CreateNewsletterConfigurationAcceptanceTest : AcceptanceTest() {
 
+    private val authorizedToken = "my-token"
+
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -26,6 +28,7 @@ class CreateNewsletterConfigurationAcceptanceTest : AcceptanceTest() {
     @BeforeEach
     fun setup() {
         cleanupDatabase()
+        authorizeForToken(authorizedToken)
 
         recipientPort.save(aRecipient().withId(HARDCODED_USER_ID).build())
     }
@@ -33,7 +36,7 @@ class CreateNewsletterConfigurationAcceptanceTest : AcceptanceTest() {
     @Test
     fun `creates a new newsletter configuration`() {
         // When
-        mockMvc.post("/api/v1/newsletter-configuration") { basicAuth("admin", "passwd") }
+        mockMvc.post("/api/v1/newsletter-configuration") { bearerToken(authorizedToken) }
 
         // Then
         assertThat(newsletterConfigurationRepository.findAll()).hasSize(1)

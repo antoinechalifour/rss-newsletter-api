@@ -3,7 +3,7 @@ package dev.antoinechalifour.newsletter.acceptance
 import dev.antoinechalifour.newsletter.RecipientTestBuilder.Companion.aRecipient
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
 import dev.antoinechalifour.newsletter.asserts.NewsletterConfigurationAssert.Companion.assertThat
-import dev.antoinechalifour.newsletter.basicAuth
+import dev.antoinechalifour.newsletter.bearerToken
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
 import dev.antoinechalifour.newsletter.domain.RecipientPort
@@ -20,6 +20,8 @@ import java.util.UUID
 @SpringBootTest
 @AutoConfigureMockMvc
 internal class AddNewSourceToNewsletterConfigurationAcceptanceTest : AcceptanceTest() {
+
+    private val authorizedToken = "my-token"
     private lateinit var newsletterConfigurationId: UUID
 
     @Autowired
@@ -34,6 +36,7 @@ internal class AddNewSourceToNewsletterConfigurationAcceptanceTest : AcceptanceT
     @BeforeEach
     fun setup() {
         cleanupDatabase()
+        authorizeForToken(authorizedToken)
 
         val recipient = aRecipient().build()
         val newsletterConfiguration = NewsletterConfiguration(UUID.randomUUID(), recipient.id)
@@ -47,7 +50,7 @@ internal class AddNewSourceToNewsletterConfigurationAcceptanceTest : AcceptanceT
     fun `adds a new source to the existing newsletter configuration`() {
         // When
         mockMvc.post("/api/v1/newsletter-configuration/$newsletterConfigurationId/sources") {
-            basicAuth("admin", "passwd")
+            bearerToken(authorizedToken)
             contentType = MediaType.APPLICATION_JSON
             content = "/test-http/create-source.json".asTestResourceFileContent()
         }

@@ -3,9 +3,10 @@ package dev.antoinechalifour.newsletter.application
 import com.nhaarman.mockitokotlin2.whenever
 import dev.antoinechalifour.newsletter.ArticleTestBuilder.Companion.anArticle
 import dev.antoinechalifour.newsletter.NewsletterTestBuilder.Companion.aNewsletter
-import dev.antoinechalifour.newsletter.basicAuth
+import dev.antoinechalifour.newsletter.bearerToken
 import dev.antoinechalifour.newsletter.usecase.SendNewsletter
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -21,10 +22,16 @@ import java.util.UUID
 @AutoConfigureMockMvc
 internal class NewsletterControllerPostTest : ApiIntegrationTest() {
 
+    private val authorizedToken = "my-token"
     private val clock = Clock.fixed(now(), ZoneId.of("Europe/Paris"))
 
     @MockBean
     private lateinit var sendNewsletter: SendNewsletter
+
+    @BeforeEach
+    fun setup() {
+        authorizeForToken(authorizedToken)
+    }
 
     @Test
     fun `should not be accessible without authentication`() {
@@ -48,7 +55,7 @@ internal class NewsletterControllerPostTest : ApiIntegrationTest() {
         whenever(sendNewsletter.invoke(newsletterConfigurationId.toString())).thenReturn(newsletter)
 
         mockMvc.post("/api/v1/newsletter-configuration/$newsletterConfigurationId/newsletter") {
-            basicAuth("admin", "passwd")
+            bearerToken(authorizedToken)
         }.andExpect {
             status { isOk }
             jsonPath("$.id", equalTo(newsletter.id.toString()))

@@ -8,7 +8,7 @@ fun String.asTestResourceFileContent() = NewsletterApplicationTests::class.java.
 
 private fun String.encode() = "Basic " + Base64Utils.encodeToString(this.toByteArray())
 
-fun MockHttpServletRequestDsl.basicAuth(username: String, password: String) =
-    header("Authorization", "$username:$password".encode())
+fun MockHttpServletRequestDsl.bearerToken(fakeToken: String) =
+    header("Authorization", "Bearer $fakeToken")
 
 fun Buffer.string() = this.readByteString().utf8()
