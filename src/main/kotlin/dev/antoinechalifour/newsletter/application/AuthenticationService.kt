@@ -1,23 +1,25 @@
 package dev.antoinechalifour.newsletter.application
 
-import dev.antoinechalifour.newsletter.domain.Recipient
+import dev.antoinechalifour.newsletter.domain.RecipientPort
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Component
-import java.util.UUID
+import org.springframework.web.server.ResponseStatusException
 
 @Component
-class AuthenticationService {
-    fun currentUser(): Recipient {
-        val jwt = SecurityContextHolder.getContext().authentication.principal as Jwt
-        val name = checkNotNull(jwt.claims["name"]) as String
-        val email = checkNotNull(jwt.claims["email"]) as String
-
-        return Recipient(UUID.randomUUID(), name, email)
+class AuthenticationService(val recipientPort: RecipientPort) {
+    fun currentUser() = try {
+        recipientPort.ofEmail(userDetails().email)
+    } catch (e: NoSuchElementException) {
+        throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
     }
 
     fun userDetails() = principal().run {
-        UserDetails(checkNotNull(claims["name"]) as String, checkNotNull(claims["email"]) as String)
+        UserDetails(
+            email = checkNotNull(claims["email"]) as String,
+            name = checkNotNull(claims["name"]) as String
+        )
     }
 
     private fun principal() = SecurityContextHolder.getContext().authentication.principal as Jwt
