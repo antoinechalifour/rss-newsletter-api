@@ -13,7 +13,7 @@ import java.util.UUID
 class NewsletterConfigurationController(val createNewsletterConfiguration: CreateNewsletterConfiguration) {
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun post(): ResponseEntity<Any> = createNewsletterConfiguration(HARDCODED_USER_ID).run {
+    fun post(): ResponseEntity<NewsletterConfigurationResponse> = createNewsletterConfiguration(HARDCODED_USER_ID).run {
         ResponseEntity.status(201)
             .body(NewsletterConfigurationResponse.of(this))
     }
