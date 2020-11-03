@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException
 
 @Component
 class AuthenticationService(val recipientPort: RecipientPort) {
+
     fun currentUser() = try {
         recipientPort.ofEmail(userDetails().email)
     } catch (e: NoSuchElementException) {

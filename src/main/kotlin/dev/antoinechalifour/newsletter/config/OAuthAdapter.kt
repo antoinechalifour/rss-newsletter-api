@@ -9,6 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy
 @Configuration
 @EnableWebSecurity
 class OAuthAdapter : WebSecurityConfigurerAdapter() {
+
     override fun configure(http: HttpSecurity) {
         http
             .httpBasic().disable()
