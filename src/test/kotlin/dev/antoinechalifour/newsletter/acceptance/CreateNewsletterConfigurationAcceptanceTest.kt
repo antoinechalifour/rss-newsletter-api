@@ -28,9 +28,9 @@ class CreateNewsletterConfigurationAcceptanceTest : AcceptanceTest() {
     @BeforeEach
     fun setup() {
         cleanupDatabase()
-        authorizeForToken(authorizedToken)
+        val recipient = authorizeForToken(authorizedToken)
 
-        recipientPort.save(aRecipient().withId(HARDCODED_USER_ID).build())
+        recipientPort.save(recipient)
     }
 
     @Test

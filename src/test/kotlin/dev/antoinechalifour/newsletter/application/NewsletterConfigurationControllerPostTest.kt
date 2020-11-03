@@ -4,6 +4,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder.Companion.aNewsletterConfiguration
 import dev.antoinechalifour.newsletter.application.NewsletterConfigurationController.Companion.HARDCODED_USER_ID
 import dev.antoinechalifour.newsletter.bearerToken
+import dev.antoinechalifour.newsletter.domain.Recipient
 import dev.antoinechalifour.newsletter.usecase.CreateNewsletterConfiguration
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.BeforeEach
@@ -19,13 +20,14 @@ import org.springframework.test.web.servlet.post
 internal class NewsletterConfigurationControllerPostTest : ApiIntegrationTest() {
 
     private val authorizedToken = "my-token"
+    private lateinit var loggedInRecipient: Recipient
 
     @MockBean
     private lateinit var createNewsletterConfiguration: CreateNewsletterConfiguration
 
     @BeforeEach
     fun setup() {
-        authorizeForToken(authorizedToken)
+        loggedInRecipient = authorizeForToken(authorizedToken)
     }
 
     @Test
@@ -37,7 +39,7 @@ internal class NewsletterConfigurationControllerPostTest : ApiIntegrationTest() 
     fun `returns a newly created newsletter configuration`() {
         // Given
         val newsletterConfiguration = aNewsletterConfiguration().build()
-        whenever(createNewsletterConfiguration(HARDCODED_USER_ID)).thenReturn(newsletterConfiguration)
+        whenever(createNewsletterConfiguration(loggedInRecipient.id)).thenReturn(newsletterConfiguration)
 
         // When Then
         mockMvc.post("/api/v1/newsletter-configuration") { bearerToken(authorizedToken) }
