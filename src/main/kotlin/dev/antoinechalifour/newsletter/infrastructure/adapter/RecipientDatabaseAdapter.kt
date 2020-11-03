@@ -13,6 +13,10 @@ class RecipientDatabaseAdapter(val recipientRepository: RecipientRepository) : R
         .map { it.toRecipient() }
         .orElseThrow { NoSuchElementException("Recipient $id was not found") }
 
+    override fun ofEmail(email: String): Recipient = recipientRepository.findByEmail(email)
+        .map { it.toRecipient() }
+        .orElseThrow { NoSuchElementException("Recipient $email was not found") }
+
     override fun save(recipient: Recipient) {
         recipientRepository.save(RecipientDatabase.of(recipient))
     }

@@ -5,7 +5,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder.Companion.aNewsletterConfiguration
 import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
-import dev.antoinechalifour.newsletter.basicAuth
+import dev.antoinechalifour.newsletter.bearerToken
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
 import dev.antoinechalifour.newsletter.domain.Source
 import dev.antoinechalifour.newsletter.usecase.AddNewSourceToNewsletterConfiguration
@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.post
 @AutoConfigureMockMvc
 internal class SourceControllerPostTest : ApiIntegrationTest() {
 
+    private val authorizedToken = "my-token"
     private lateinit var newsletterConfiguration: NewsletterConfiguration
     private lateinit var newSource: Source
 
@@ -30,6 +31,7 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
 
     @BeforeEach
     fun setup() {
+        authorizeForToken(authorizedToken)
         newSource = aSource().withName("Source name").withUrl("http://tech.com/rss.xml").build()
         newsletterConfiguration = aNewsletterConfiguration().withSources(newSource).build()
     }
@@ -52,7 +54,7 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
 
         // When
         mockMvc.post("/api/v1/newsletter-configuration/${newsletterConfiguration.id}/sources") {
-            basicAuth("admin", "passwd")
+            bearerToken(authorizedToken)
             contentType = MediaType.APPLICATION_JSON
             content = "/test-http/create-source.json".asTestResourceFileContent()
         }.andExpect {
@@ -72,7 +74,7 @@ internal class SourceControllerPostTest : ApiIntegrationTest() {
 
         // When
         mockMvc.post("/api/v1/newsletter-configuration/not-a-valid-id/sources") {
-            basicAuth("admin", "passwd")
+            bearerToken(authorizedToken)
             contentType = MediaType.APPLICATION_JSON
             content = "/test-http/create-source.json".asTestResourceFileContent()
         }.andExpect {

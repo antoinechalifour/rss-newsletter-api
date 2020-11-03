@@ -8,7 +8,7 @@ import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder.Compan
 import dev.antoinechalifour.newsletter.RecipientTestBuilder.Companion.aRecipient
 import dev.antoinechalifour.newsletter.SourceTestBuilder.Companion.aSource
 import dev.antoinechalifour.newsletter.asTestResourceFileContent
-import dev.antoinechalifour.newsletter.basicAuth
+import dev.antoinechalifour.newsletter.bearerToken
 import dev.antoinechalifour.newsletter.domain.NewsletterConfiguration
 import dev.antoinechalifour.newsletter.domain.NewsletterConfigurationPort
 import dev.antoinechalifour.newsletter.domain.NewsletterPort
@@ -39,6 +39,8 @@ import java.util.UUID
 @SpringBootTest
 @AutoConfigureMockMvc
 class SendNewsletterAcceptanceTest : AcceptanceTest() {
+
+    private val authorizedToken = "my-token"
     private lateinit var theRecipient: Recipient
     private lateinit var theNewsletterConfiguration: NewsletterConfiguration
     private var mockWebServer = MockWebServer()
@@ -64,6 +66,7 @@ class SendNewsletterAcceptanceTest : AcceptanceTest() {
     @BeforeEach
     fun setup() {
         cleanupDatabase()
+        authorizeForToken(authorizedToken)
 
         val response = MockResponse().setBody("/test-http/rss-feed.xml".asTestResourceFileContent())
         mockWebServer.start()
@@ -97,7 +100,7 @@ class SendNewsletterAcceptanceTest : AcceptanceTest() {
     fun `sends the newsletter and saves it`() {
         // When
         mockMvc.post("/api/v1/newsletter-configuration/${theNewsletterConfiguration.id}/newsletter") {
-            basicAuth("admin", "passwd")
+            bearerToken(authorizedToken)
         }
 
         // Then

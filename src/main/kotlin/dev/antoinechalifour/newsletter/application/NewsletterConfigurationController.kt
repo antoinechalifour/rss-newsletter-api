@@ -10,12 +10,18 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("/api/v1/newsletter-configuration")
-class NewsletterConfigurationController(val createNewsletterConfiguration: CreateNewsletterConfiguration) {
+class NewsletterConfigurationController(
+    val createNewsletterConfiguration: CreateNewsletterConfiguration,
+    val authenticationService: AuthenticationService
+) {
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun post(): ResponseEntity<Any> = createNewsletterConfiguration(HARDCODED_USER_ID).run {
-        ResponseEntity.status(201)
-            .body(NewsletterConfigurationResponse.of(this))
+    fun post(): ResponseEntity<NewsletterConfigurationResponse> {
+        val recipient = authenticationService.currentUser()
+        val newsletterConfiguration = createNewsletterConfiguration(recipient.id)
+
+        return ResponseEntity.status(201)
+            .body(NewsletterConfigurationResponse.of(newsletterConfiguration))
     }
 
     companion object {

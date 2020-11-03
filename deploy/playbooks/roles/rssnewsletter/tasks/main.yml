@@ -45,5 +45,7 @@
       SPRING_DATASOURCE_USERNAME: "{{ db_user }}"
       SPRING_DATASOURCE_PASSWORD: "{{ db_password }}"
       SPRING_JPA_HIBERNATE_DDL-AUTO: none
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: "{{ auth_issuer_uri }}"
+
     ports:
       - "127.0.0.1:9090:8080"

@@ -1,11 +1,12 @@
 package dev.antoinechalifour.newsletter.infrastructure.adapter
 
+import dev.antoinechalifour.newsletter.IntegrationTest
 import dev.antoinechalifour.newsletter.infrastructure.database.NewsletterConfigurationRepository
 import dev.antoinechalifour.newsletter.infrastructure.database.NewsletterRepository
 import dev.antoinechalifour.newsletter.infrastructure.database.RecipientRepository
 import org.springframework.beans.factory.annotation.Autowired
 
-open class DatabaseAdapterTest {
+open class DatabaseAdapterTest : IntegrationTest() {
 
     @Autowired
     protected lateinit var recipientRepository: RecipientRepository
