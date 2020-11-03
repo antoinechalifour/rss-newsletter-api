@@ -9,7 +9,18 @@ import java.util.UUID
 @Component
 class CreateAccount(val recipientPort: RecipientPort) {
 
-    operator fun invoke(userDetails: UserDetails) =
-        Recipient(UUID.randomUUID(), userDetails.name, userDetails.email)
-            .also { recipientPort.save(it) }
+    operator fun invoke(userDetails: UserDetails): Recipient {
+        val recipient = try {
+            recipientPort.ofEmail(userDetails.email).apply {
+                email = userDetails.email
+                name = userDetails.name
+            }
+        } catch (e: NoSuchElementException) {
+            Recipient(UUID.randomUUID(), userDetails.name, userDetails.email)
+        }
+
+        recipientPort.save(recipient)
+
+        return recipient
+    }
 }
