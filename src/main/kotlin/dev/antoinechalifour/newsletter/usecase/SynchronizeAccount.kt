@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class CreateAccount(val recipientPort: RecipientPort) {
+class SynchronizeAccount(val recipientPort: RecipientPort) {
 
     operator fun invoke(userDetails: UserDetails): Recipient {
         val recipient = try {

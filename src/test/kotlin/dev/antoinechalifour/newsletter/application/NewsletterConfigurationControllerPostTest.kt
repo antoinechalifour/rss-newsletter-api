@@ -2,7 +2,6 @@ package dev.antoinechalifour.newsletter.application
 
 import com.nhaarman.mockitokotlin2.whenever
 import dev.antoinechalifour.newsletter.NewsletterConfigurationTestBuilder.Companion.aNewsletterConfiguration
-import dev.antoinechalifour.newsletter.application.NewsletterConfigurationController.Companion.HARDCODED_USER_ID
 import dev.antoinechalifour.newsletter.bearerToken
 import dev.antoinechalifour.newsletter.domain.Recipient
 import dev.antoinechalifour.newsletter.usecase.CreateNewsletterConfiguration

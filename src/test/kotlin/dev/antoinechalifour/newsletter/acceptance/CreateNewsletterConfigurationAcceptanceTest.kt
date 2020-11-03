@@ -1,7 +1,5 @@
 package dev.antoinechalifour.newsletter.acceptance
 
-import dev.antoinechalifour.newsletter.RecipientTestBuilder.Companion.aRecipient
-import dev.antoinechalifour.newsletter.application.NewsletterConfigurationController.Companion.HARDCODED_USER_ID
 import dev.antoinechalifour.newsletter.bearerToken
 import dev.antoinechalifour.newsletter.domain.RecipientPort
 import org.assertj.core.api.Assertions.assertThat

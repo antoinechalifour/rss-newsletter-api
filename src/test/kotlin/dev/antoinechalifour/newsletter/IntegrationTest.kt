@@ -3,9 +3,8 @@ package dev.antoinechalifour.newsletter
 import com.nhaarman.mockitokotlin2.whenever
 import dev.antoinechalifour.newsletter.RecipientTestBuilder.Companion.aRecipient
 import dev.antoinechalifour.newsletter.application.AuthenticationService
+import dev.antoinechalifour.newsletter.application.UserDetails
 import dev.antoinechalifour.newsletter.domain.Recipient
-import dev.antoinechalifour.newsletter.domain.RecipientPort
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.security.oauth2.jwt.Jwt
@@ -38,3 +37,5 @@ abstract class IntegrationTest {
         return recipient
     }
 }
+
+fun Recipient.asUserDetails() = UserDetails(email, name)
