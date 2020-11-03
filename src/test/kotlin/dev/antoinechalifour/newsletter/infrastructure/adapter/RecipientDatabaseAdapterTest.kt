@@ -35,11 +35,34 @@ internal class RecipientDatabaseAdapterTest : DatabaseAdapterTest() {
     }
 
     @Test
-    fun `throws an exception when the recipient is not found`() {
+    fun `throws an exception when the recipient is not found using its ID`() {
         val idWithoutRecipient = UUID.randomUUID()
 
         assertThatThrownBy { recipientDatabaseAdapter.ofId(idWithoutRecipient) }
             .isInstanceOf(NoSuchElementException::class.java)
             .hasMessage("Recipient $idWithoutRecipient was not found")
+    }
+
+    @Test
+    fun `retrieves a recipient using its email`() {
+        // Given
+        val theRecipient = aRecipient().build()
+
+        // When
+        recipientDatabaseAdapter.save(theRecipient)
+
+        // Then
+        assertThat(recipientDatabaseAdapter.ofEmail(theRecipient.email))
+            .usingRecursiveComparison()
+            .isEqualTo(theRecipient)
+    }
+
+    @Test
+    fun `throws an exception when the recipient is not found using its email`() {
+        val emailWithoutRecipient = "some.unkown@email.com"
+
+        assertThatThrownBy { recipientDatabaseAdapter.ofEmail(emailWithoutRecipient) }
+            .isInstanceOf(NoSuchElementException::class.java)
+            .hasMessage("Recipient $emailWithoutRecipient was not found")
     }
 }
